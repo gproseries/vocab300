@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TPAT3 คืนหมาหอน</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#0b5ed7;
+  --secondary:#063f9a;
+  --accent:#ffc107;
+  --success:#22c55e;
+  --danger:#ef4444;
+  --bg:#0b0f1a;
+  --card:#0f172a;
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+  --border:rgba(148,163,184,.18);
+}
+
+*{box-sizing:border-box}
+
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:'Sarabun',sans-serif;
+  background:
+    radial-gradient(1200px 600px at 20% 10%, rgba(11,94,215,.25), transparent 60%),
+    radial-gradient(900px 500px at 80% 30%, rgba(255,193,7,.12), transparent 55%),
+    var(--bg);
+  color:var(--text);
+  padding:16px;
+  -webkit-text-size-adjust:100%;
+  touch-action:manipulation;
+}
+
+.container{
+  max-width:900px;
+  margin:auto;
+  background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+  border:1px solid var(--border);
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 18px 60px rgba(0,0,0,.45);
+}
+
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:16px;
+  background:linear-gradient(120deg,rgba(11,94,215,.6),rgba(6,63,154,.35));
+  border-bottom:1px solid var(--border);
+}
+
+.left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+
+.back-btn{
+  border:none;
+  background:rgba(2,6,23,.65);
+  color:#fff;
+  padding:9px 14px;
+  border-radius:999px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+h1{
+  margin:0;
+  font-size:18px;
+  font-weight:800;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.sub{
+  margin:0;
+  font-size:12px;
+  color:rgba(229,231,235,.85);
+  display:none;
+}
+
+@media (min-width:720px){
+  h1{font-size:20px}
+  .sub{display:block}
+}
+
+.progress-wrap{
+  height:8px;
+  background:rgba(148,163,184,.18);
+}
+
+.progress{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--success),#4ade80);
+  transition:width .25s ease;
+}
+
+.main{padding:18px}
+
+.badge{
+  display:inline-block;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:800;
+  background:rgba(2,6,23,.55);
+  border:1px solid var(--border);
+  color:var(--text);
+}
+
+.badge.predict{
+  border-color:rgba(255,193,7,.55);
+  box-shadow:0 0 0 1px rgba(255,193,7,.12) inset;
+}
+
+.question{
+  font-size:18px;
+  font-weight:800;
+  margin:12px 0 14px;
+  line-height:1.45;
+}
+
+.options{
+  display:grid;
+  gap:10px;
+}
+
+.option{
+  width:100%;
+  padding:14px 14px;
+  border-radius:14px;
+  background:rgba(2,6,23,.62);
+  border:1px solid var(--border);
+  color:var(--text);
+  text-align:left;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+
+.option:active{transform:scale(.99)}
+.option:disabled{opacity:.92; cursor:default}
+
+.option.correct{
+  background:rgba(34,197,94,.18);
+  border-color:rgba(34,197,94,.6);
+}
+
+.option.wrong{
+  background:rgba(239,68,68,.18);
+  border-color:rgba(239,68,68,.6);
+}
+
+.feedback{
+  margin-top:14px;
+  padding:14px;
+  border-radius:14px;
+  background:rgba(15,23,42,.72);
+  border:1px solid var(--border);
+  display:none;
+  line-height:1.55;
+}
+
+.bottom{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-top:14px;
+}
+
+.stat{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.next{
+  padding:10px 18px;
+  border-radius:999px;
+  border:none;
+  background:linear-gradient(180deg,var(--primary),var(--secondary));
+  color:#fff;
+  font-weight:900;
+  cursor:pointer;
+  display:none;
+}
+
+.next:disabled{opacity:.6; cursor:not-allowed}
+
+.result{
+  display:none;
+  padding:26px 18px 22px;
+  text-align:center;
+}
+
+.score{
+  font-size:44px;
+  font-weight:900;
+  margin:10px 0 6px;
+  color:#dbeafe;
+}
+
+.msg{
+  color:var(--muted);
+  margin:0 0 14px;
+  line-height:1.6;
+}
+
+.again{
+  padding:10px 18px;
+  border-radius:999px;
+  border:none;
+  background:linear-gradient(180deg,#111827,#0b1222);
+  color:#fff;
+  font-weight:900;
+  cursor:pointer;
+  border:1px solid var(--border);
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="left">
+      <button class="back-btn" id="btnBack">← กลับ</button>
+      <div style="min-width:0">
+        <h1>TPAT3 คืนหมาหอน</h1>
+        <p class="sub">รวมข้อสอบเก่า + เก็ง • โหมด iPad/iPhone ลื่น</p>
+      </div>
+    </div>
+    <div class="stat" id="statTop">0/0 • 0 คะแนน</div>
+  </header>
+
+  <div class="progress-wrap"><div class="progress" id="progress"></div></div>
+
+  <div class="main" id="quiz">
+    <span class="badge" id="badge">—</span>
+    <div class="question" id="qtext">Loading…</div>
+    <div class="options" id="opts"></div>
+
+    <div class="feedback" id="fb"></div>
+
+    <div class="bottom">
+      <div class="stat" id="statBottom">ถูก 0 • ผิด 0</div>
+      <button class="next" id="btnNext">ข้อถัดไป ➜</button>
+    </div>
+  </div>
+
+  <div class="result" id="result">
+    <div class="badge">สรุปคะแนน</div>
+    <div class="score" id="finalScore">0/0</div>
+    <p class="msg" id="finalMsg"></p>
+    <button class="again" id="btnAgain">ทำอีกครั้ง</button>
+  </div>
+</div>
+
+<script>
+const examData = [
+  {
+    year: "เก็ง TPAT3 ปี 68",
+    q: "รางวัลโนเบลสาขาฟิสิกส์ ปี 2024 มอบให้กับ John Hopfield และ Geoffrey Hinton จากผลงานใด ที่ส่งผลต่อโลกเทคโนโลยีในปัจจุบันมากที่สุด",
+    opts: ["การค้นพบคลื่นความโน้มถ่วง", "การพัฒนา Machine Learning ด้วยโครงข่ายประสาทเทียม (Neural Networks)", "การพัฒนาแบตเตอรี่ Solid State", "การสร้างคอมพิวเตอร์ควอนตัม", "การค้นพบดาวเคราะห์นอกระบบ"],
+    ans: 1,
+    expl: "ปี 2024 รางวัลโนเบลเน้นไปที่ AI โดย Geoffrey Hinton ได้ชื่อว่าเป็น Godfather of AI จากงานวิจัย Neural Networks ที่เป็นรากฐานของ AI ในปัจจุบัน"
+  },
+  {
+    year: "เก็ง TPAT3 ปี 68",
+    q: "ในเดือนตุลาคม 2024 SpaceX ประสบความสำเร็จครั้งประวัติศาสตร์ในภารกิจ Starship Flight 5 ด้วยวิธีใดในการนำจรวดกลับมา",
+    opts: ["ลงจอดบนเรือโดรนกลางทะเล", "ใช้ร่มชูชีพขนาดยักษ์", "ใช้แขนกล Mechazilla (Chopsticks) คีบจรวดกลางอากาศ", "ลงจอดเหมือนเครื่องบิน", "ตกลงในมหาสมุทรแล้วกู้คืน"],
+    ans: 2,
+    expl: "เป็นครั้งแรกที่ใช้หอคอยปล่อยจรวดที่มีแขนกล (Mechazilla) คีบจรวด Super Heavy Booster กลับเข้าฐานได้สำเร็จ"
+  },
+  {
+    year: "เก็ง TPAT3 ปี 68",
+    q: "การลงทุนด้านเทคโนโลยีครั้งใหญ่ในไทยปี 2024 จากบริษัทระดับโลกอย่าง Microsoft และ Google เน้นไปที่โครงสร้างพื้นฐานด้านใด",
+    opts: ["โรงงานผลิตชิป", "Data Center และ Cloud Region", "โรงงานประกอบรถ EV", "สถานีอวกาศ", "โครงข่าย 6G"],
+    ans: 1,
+    expl: "บริษัทเทคโนโลยียักษ์ใหญ่ประกาศลงทุนสร้าง Data Center ในไทยเพื่อรองรับการเติบโตของ AI และ Cloud Computing"
+  },
+  {
+    year: "เก็ง TPAT3 ปี 68",
+    q: "นักวิทยาศาสตร์ค้นพบ 'Dark Oxygen' (ออกซิเจนมืด) ที่ก้นมหาสมุทรแปซิฟิก ซึ่งเกิดจากกระบวนการใด",
+    opts: ["การสังเคราะห์แสงของพืชใต้น้ำ", "ปฏิกิริยาเคมีของก้อนแร่โลหะ (Polymetallic nodules) ที่ทำตัวเหมือนแบตเตอรี่ธรรมชาติ", "การระเบิดของภูเขาไฟใต้ทะเล", "การเน่าเปื่อยของซากวาฬ", "ปฏิกิริยานิวเคลียร์ใต้โลก"],
+    ans: 1,
+    expl: "การค้นพบใหม่ระบุว่าก้อนแร่โลหะที่ก้นทะเลสามารถแยกโมเลกุลน้ำเป็นออกซิเจนได้โดยไม่ต้องใช้แสง (Dark Oxygen)"
+  },
+  {
+    year: "เก็ง TPAT3 ปี 68",
+    q: "โครงการ Chang'e-6 (ฉางเอ๋อ-6) ของจีน สร้างประวัติศาสตร์หน้าใหม่ให้กับวงการอวกาศในปี 2024 ด้วยภารกิจใด",
+    opts: ["ส่งมนุษย์ไปดวงจันทร์", "ปลูกพืชบนดวงจันทร์", "เก็บตัวอย่างหินจาก 'ด้านไกล' ของดวงจันทร์กลับโลกได้สำเร็จ", "พบแหล่งน้ำขนาดใหญ่", "สร้างฐานทัพบนดวงจันทร์"],
+    ans: 2,
+    expl: "จีนเป็นชาติแรกที่สามารถเก็บตัวอย่างจากด้านไกล (Far Side) ของดวงจันทร์และส่งกลับมายังโลกได้สำเร็จ"
+  },
+  {
+    year: "เก็ง TPAT3 ปี 68",
+    q: "เทคโนโลยี SMR ที่ถูกพูดถึงในวงการพลังงานสะอาดเพื่อรองรับ AI Data Center หมายถึงอะไร",
+    opts: ["Smart Meter Reading", "Small Modular Reactors (เครื่องปฏิกรณ์นิวเคลียร์ขนาดเล็ก)", "Solar Maximum Roof", "Super Magnetic Rail", "Solid Metal Rocket"],
+    ans: 1,
+    expl: "SMR คือโรงไฟฟ้านิวเคลียร์ขนาดเล็ก ที่มีความปลอดภัยสูง และกำลังเป็นทางเลือกพลังงานสะอาดสำหรับ Data Center (เช่น Microsoft ร่วมมือกับโรงไฟฟ้านิวเคลียร์)"
+  },
+  {
+    year: "เก็ง TPAT3 ปี 68",
+    q: "ปรากฏการณ์ทางสภาพอากาศที่เลขาธิการ UN กล่าวว่า 'ยุคโลกร้อนสิ้นสุดลงแล้ว' แต่เรากำลังเข้าสู่ยุคใด",
+    opts: ["Global Cooling (โลกเย็น)", "Global Boiling (โลกเดือด)", "Global Freezing (โลกแข็ง)", "Global Drying (โลกแล้ง)", "Global Flooding (โลกท่วม)"],
+    ans: 1,
+    expl: "António Guterres เลขาธิการ UN ใช้คำว่า 'Global Boiling' เพื่อสื่อถึงความรุนแรงของวิกฤตสภาพอากาศที่เกินกว่าคำว่าโลกร้อนไปแล้ว"
+  },
+  {
+    year: "เก็ง TPAT3 ปี 68",
+    q: "ข่าวการเสียชีวิตหมู่จากการดื่ม 'เหล้าเถื่อน' ในปี 2567 เกิดจากสารปนเปื้อนชนิดใด",
+    opts: ["เอทานอล", "เมทานอล (Methanol)", "ไซยาไนด์", "สารหนู", "ปรอท"],
+    ans: 1,
+    expl: "เมทานอล เป็นแอลกอฮอล์ราคาถูกสำหรับอุตสาหกรรม หากนำมาผสมเหล้าจะทำให้เลือดเป็นกรด ตาบอด และเสียชีวิต"
+  },
+  {
+    year: "เก็ง TPAT3 ปี 68",
+    q: "CERN ประสบความสำเร็จในการทดลองยิงลำแสงไอออน เพื่อเปลี่ยนธาตุชนิดหนึ่งให้กลายเป็น 'ทองคำ' (แต่ไม่คุ้มค่าเชิงพาณิชย์) ธาตุตั้งต้นนั้นคืออะไร",
+    opts: ["เหล็ก (Fe)", "ตะกั่ว (Pb)", "ปรอท (Hg)", "ทองแดง (Cu)", "เงิน (Ag)"],
+    ans: 1,
+    expl: "นักวิจัย CERN พบวิธีเปลี่ยน 'ตะกั่ว' เป็น 'ทองคำ' ได้สำเร็จ แต่ใช้พลังงานมหาศาลจนไม่คุ้มค่าที่จะทำเพื่อขาย"
+  },
+  {
+    year: "เก็ง TPAT3 ปี 68",
+    q: "ระบบปฏิบัติการใดที่ได้รับผลกระทบจากเหตุการณ์ CrowdStrike จนเกิดจอฟ้า (Blue Screen) ทั่วโลก",
+    opts: ["macOS", "Linux", "Microsoft Windows", "Android", "iOS"],
+    ans: 2,
+    expl: "เหตุการณ์ CrowdStrike outage กระทบระบบ Microsoft Windows ทั่วโลก ทำให้หลายองค์กรเป็นอัมพาต"
+  },
+
+  {
+    year: "เก็ง TPAT3 ปี 68 (อัปเดต 2568/2025)",
+    q: "รางวัลโนเบลสาขาฟิสิกส์ ปี 2025 มอบให้ Clarke–Devoret–Martinis จากผลงานด้านใด",
+    opts: [
+      "การค้นพบคลื่นความโน้มถ่วง",
+      "การค้นพบปรากฏการณ์ควอนตัมระดับมหภาคในวงจรตัวนำยิ่งยวด (quantum circuits) เช่น macroscopic quantum tunnelling/energy quantisation",
+      "การพัฒนา Neural Networks สำหรับ AI",
+      "การค้นพบสสารมืดโดยตรง",
+      "การคิดค้นเซลล์แสงอาทิตย์เพอรอฟสไกต์"
+    ],
+    ans: 1,
+    expl: "โนเบลฟิสิกส์ 2025 ยกให้ผลงานที่ทำให้เรา ‘ควบคุมควอนตัมในวงจรไฟฟ้า’ ได้จริง เป็นรากสำคัญของเทคโนโลยีควอนตัม"
+  },
+  {
+    year: "เก็ง TPAT3 ปี 68 (อัปเดต 2568/2025)",
+    q: "รางวัลโนเบลสาขาเคมี ปี 2025 เด่นเรื่องวัสดุพรุนโครงสร้างผลึกที่ใช้เก็บ/แยกก๊าซได้ดี วัสดุนั้นคืออะไร",
+    opts: [
+      "พลาสติกย่อยสลายได้ชีวภาพรุ่นใหม่",
+      "Metal–Organic Frameworks (MOFs)",
+      "กราฟีน (Graphene)",
+      "DNA Double Helix",
+      "ไฮโดรเจนเหลวจากน้ำทะเลโดยตรง"
+    ],
+    ans: 1,
+    expl: "โนเบลเคมี 2025 โฟกัส MOFs: วัสดุโครงข่ายพรุนระดับนาโน ใช้แยก/กักเก็บก๊าซ และเป็นตัวเร่งปฏิกิริยาได้"
+  },
+  {
+    year: "เก็ง TPAT3 ปี 68 (อัปเดต 2568/2025)",
+    q: "Microsoft ประกาศ (พ.ย. 2025) แผนใหญ่ในไทยเพื่อรองรับ AI โดยเน้นโครงสร้างพื้นฐานอะไรเป็นแกนหลัก",
+    opts: [
+      "โรงงานผลิตชิปในไทย",
+      "Local Cloud Region + Data Center Infrastructure",
+      "โครงข่าย 6G ระดับประเทศ",
+      "สถานีอวกาศภูมิภาคอาเซียน",
+      "โรงไฟฟ้านิวเคลียร์ SMR กลางกรุงเทพฯ"
+    ],
+    ans: 1,
+    expl: "Microsoft ย้ำการเร่งทำ Local cloud region/ดาต้าเซ็นเตอร์ในไทย เพื่อให้สร้าง-รัน AI ได้ในประเทศ"
+  },
+  {
+    year: "เก็ง TPAT3 ปี 68 (อัปเดต 2568/2025)",
+    q: "การบินครั้งแรกของจรวด New Glenn (Blue Origin) วันที่ 16 ม.ค. 2025 เป้าหมายหลักที่ทำสำเร็จคืออะไร",
+    opts: [
+      "ส่งมนุษย์ขึ้นวงโคจร",
+      "ลงจอดบนดวงจันทร์",
+      "ส่งเพย์โหลดขึ้นสู่วงโคจรโลกได้ (reached orbit)",
+      "คีบบูสเตอร์ด้วยแขนกลกลางอากาศ",
+      "ลงจอดแบบเครื่องบินรันเวย์"
+    ],
+    ans: 2,
+    expl: "เที่ยวบินแรกทำ ‘ถึงวงโคจร’ ซึ่งเป็นเป้าหมายหลัก แม้การลงจอดบูสเตอร์จะยังไม่สำเร็จในครั้งนั้น"
+  },
+  {
+    year: "เก็ง TPAT3 ปี 68 (อัปเดต 2568/2025)",
+    q: "ภารกิจ 13 พ.ย. 2025 ของ New Glenn ส่งดาวเทียมคู่ของ NASA ชื่ออะไรไปดาวอังคาร",
+    opts: ["Voyager","Artemis","EscaPADE","Starlink","Hubble"],
+    ans: 2,
+    expl: "New Glenn ปล่อยดาวเทียมคู่ EscaPADE มุ่งหน้าดาวอังคาร"
+  },
+  {
+    year: "เก็ง TPAT3 ปี 68 (อัปเดต 2568/2025)",
+    q: "EU AI Act เริ่มบังคับใช้เป็นช่วง ๆ โดยวันที่ 2 ก.พ. 2025 เริ่มใช้กฎกลุ่มใดก่อน",
+    opts: [
+      "ข้อกำหนดสำหรับระบบ High-risk ทั้งหมด",
+      "กฎสำหรับ General-purpose AI ทั้งหมด",
+      "ข้อห้ามบางอย่าง (Prohibitions) + ข้อกำหนดเรื่อง AI literacy",
+      "บังคับจดทะเบียนโมเดล AI ต่อ EU ทุกตัว",
+      "เก็บภาษีบริษัท AI ทุกราย"
+    ],
+    ans: 2,
+    expl: "ไทม์ไลน์ EU AI Act: บางส่วนเริ่มก่อน โดยเฉพาะข้อห้ามบางประเภท และการผลักดันเรื่องความรู้/การใช้งาน AI อย่างรับผิดชอบ"
+  },
+  {
+    year: "เก็ง TPAT3 ปี 68 (อัปเดต 2568/2025)",
+    q: "DeepMind/สหราชอาณาจักรประกาศตั้ง ‘Automated science lab’ เพื่อเร่งงานวิจัยด้านใดเป็นหลัก",
+    opts: ["ชีววิทยาทางทะเล","วัสดุศาสตร์ (Materials science)","ดาราศาสตร์วิทยุ","ธรณีฟิสิกส์ภูเขาไฟ","เศรษฐศาสตร์พฤติกรรม"],
+    ans: 1,
+    expl: "แนวคิดคือใช้หุ่นยนต์+AI ทำการทดลองวนลูปเร็วมาก เพื่อค้นพบ/พัฒนาวัสดุใหม่ ๆ ได้ไวขึ้น"
+  },
+  {
+    year: "เก็ง TPAT3 ปี 68 (อัปเดต 2568/2025)",
+    q: "Valar Atomics ทำ ‘zero-power criticality’ สำเร็จ (พ.ย. 2025) โดยหลักหมายถึงอะไร",
+    opts: [
+      "จุดติดฟิวชันให้ได้พลังงานสุทธิมากกว่าที่ใส่เข้าไป",
+      "ทำให้เกิดปฏิกิริยาฟิชชันแบบลูกโซ่คงตัวในระดับกำลังต่ำมาก (criticality) เพื่อยืนยันฟิสิกส์/การออกแบบ",
+      "ทำให้แบตเตอรี่ solid-state ชาร์จ 1 วินาที",
+      "ทำให้ AI ทำนายอากาศได้ 100%",
+      "ส่งคนขึ้นดาวอังคาร"
+    ],
+    ans: 1,
+    expl: "‘Criticality’ คือสภาวะที่ปฏิกิริยาฟิชชันลูกโซ่พอดี ๆ (คุมได้) ในระดับกำลังต่ำ"
+  },
+  {
+    year: "เก็ง TPAT3 ปี 68 (อัปเดต 2568/2025)",
+    q: "Google Quantum AI รายงานอัลกอริทึมอะไรที่ทำให้เกิด ‘verifiable quantum advantage’ บนชิป Willow (ปี 2025)",
+    opts: ["Shor’s algorithm","Grover’s algorithm","Quantum Echoes","Backpropagation","RSA-2048"],
+    ans: 2,
+    expl: "Google ชูงาน ‘Quantum Echoes’ บนชิป Willow"
+  },
+  {
+    year: "เก็ง TPAT3 ปี 68 (อัปเดต 2568/2025)",
+    q: "NIF (LLNL) ทำสถิติผลผลิตพลังงานฟิวชันเมื่อ 7 เม.ย. 2025 ได้ประมาณเท่าไร",
+    opts: ["0.86 MJ","3.15 MJ","8.6 MJ","86 MJ","860 MJ"],
+    ans: 2,
+    expl: "รายงานของ LLNL ระบุช็อตวันที่ 7 เม.ย. 2025 ให้ผลผลิตระดับ ~8.6 MJ"
+  },
+
+  {
+    year: "TPAT3 ธ.ค. 65",
+    q: "การเปลี่ยนแปลงที่เกิดขึ้นอย่างรวดเร็วที่เรียกว่า “Digital Disruption” ในข้อใดที่ปรากฏให้เห็นได้อย่างชัดเจนและเป็นอันดับแรก",
+    opts: ["Block Chain", "Cryptocurrency", "Digital Camera", "Smart Phone", "ถูกทุกข้อ"],
+    ans: 2,
+    expl: "Digital Camera เข้ามาแทนที่กล้องฟิล์ม เป็นตัวอย่างคลาสสิกของ Digital Disruption ยุคแรกๆ"
+  },
+  {
+    year: "TPAT3 ธ.ค. 65",
+    q: "การผลิตไฟฟ้าจากพลังงานทดแทนในข้อใดต่อไปนี้ที่ให้กำลังผลิตสูงที่สุดในประเทศไทย",
+    opts: ["พลังงานแสงแดด", "พลังงานลม", "พลังงานนิวเคลียร์", "พลังงานน้ำ", "พลังงานชีวมวล"],
+    ans: 4,
+    expl: "ในตัวเลือกที่เป็นพลังงานทดแทนของไทย พลังงานชีวมวลมีสัดส่วนกำลังการผลิตติดตั้งสูงที่สุด"
+  },
+  {
+    year: "TPAT3 ธ.ค. 65",
+    q: "ข้อใด หมายถึง เทคโนโลยี จักรวาลนฤมิต (Metaverse)",
+    opts: ["โลกดิจิทัลเสมือนจริงที่มนุษย์สร้างขึ้น", "โลกที่มนุษย์สร้างขึ้นบนดวงจันทร์", "โลกที่มนุษย์สร้างขึ้นบนดาวเคราะห์อื่น ๆ", "โลกที่มนุษย์สร้างขึ้นในจักรวาล", "ถูกทุกข้อ"],
+    ans: 0,
+    expl: "Metaverse คือโลกเสมือนจริง (Virtual World) ที่ผสมผสานเทคโนโลยี VR/AR"
+  },
+  {
+    year: "TPAT3 ธ.ค. 65",
+    q: "ข้อใดต่อไปนี้เป็นวิธีที่ดีที่สุดที่ช่วยให้ปรากฏการณ์เรือนกระจก (Greenhouse Effect) เกิดขึ้นน้อยที่สุด",
+    opts: ["ปลูกผักสวนครัวเพื่อประกอบอาหารเอง", "ลดการดูรายการโทรทัศน์ที่ไม่จำเป็น", "งดการใช้จ่ายที่ห้างสรรพสินค้าที่ไม่จำเป็น", "ประหยัดการใช้พลังงานในบ้านเรือน", "ลดการใช้เชื้อเพลิงให้มาก"],
+    ans: 4,
+    expl: "สาเหตุหลักของก๊าซเรือนกระจกคือการเผาไหม้เชื้อเพลิงฟอสซิล ดังนั้นการลดการใช้เชื้อเพลิงจึงตรงจุดที่สุด"
+  },
+  {
+    year: "TPAT3 ธ.ค. 65",
+    q: "ผู้ที่อยู่เบื้องหลังในการสร้าง Bitcoin ซึ่งมีนามแฝงว่า ซาโตชิ นากาโมโตะ (Satoshi Nakamoto) เป็นผู้มีสัญชาติในข้อใด",
+    opts: ["อังกฤษ", "เยอรมนี", "สหรัฐอเมริกา", "ญี่ปุ่น", "ไม่ทราบสัญชาติ"],
+    ans: 4,
+    expl: "ซาโตชิ นากาโมโตะ เป็นนามแฝง จนถึงปัจจุบันยังไม่มีใครทราบตัวตนหรือสัญชาติที่แท้จริง"
+  },
+  {
+    year: "TPAT3 ธ.ค. 65",
+    q: "วัคซีนโควิดแอสตราเซเนก้า (AstraZeneca COVID Vaccine) เป็นวัคซีนชนิดใด",
+    opts: ["เชื้อตาย (Inactivated)", "เอ็มอาร์เอ็นเอ (mRNA)", "ไวรัลเวคเตอร์ (Viral Vector)", "โปรตีนส่วนหนึ่งของเชื้อ (Protein Subunit)", "เชื้ออ่อนแรง (live-attenuated)"],
+    ans: 2,
+    expl: "AstraZeneca ใช้เทคโนโลยี Viral Vector (ใช้อะดีโนไวรัสเป็นพาหะ)"
+  },
+  {
+    year: "TPAT3 ธ.ค. 65",
+    q: "เครื่องบินขับไล่ F-22 และ F-35 ถูกเรียกว่าเป็น Stealth Fighter เนื่องจากคุณสมบัติในข้อใด",
+    opts: ["ไม่สามารถมองเห็นได้ด้วยสายตา", "ขับเคลื่อนด้วยพลังงานนิวเคลียร์", "ตรวจพบได้ยากด้วยเรดาร์", "ความเร็วสูงกว่า 3 เท่าเสียง", "สามารถควบคุมแรงขับได้หลายทิศทาง"],
+    ans: 2,
+    expl: "Stealth หมายถึงการถูกตรวจจับได้ยากโดยเรดาร์"
+  },
+  {
+    year: "TPAT3 ธ.ค. 65",
+    q: "ระเบิดปรมาณูที่ถูกใช้ในช่วงปลายสงครามโลกครั้งที่ 2 พลังงานจากการระเบิดมาจากกระบวนการในข้อใด",
+    opts: ["กระบวนการเคมี", "กระบวนการนิวเคลียร์แบบแตกตัว (Fission)", "กระบวนการนิวเคลียร์แบบหลอมตัว (Fusion)", "กระบวนการสลายตัวทางรังสี", "กระบวนการเชิงกล"],
+    ans: 1,
+    expl: "ระเบิดปรมาณูยุคแรกเกิดจากปฏิกิริยาฟิชชัน (Fission)"
+  },
+  {
+    year: "TPAT3 ธ.ค. 65",
+    q: "ข้อใดต่อไปนี้ไม่ถูกต้อง",
+    opts: ["นิวตันตั้งกฏการเคลื่อนที่สามข้อ", "ดาร์วินเขียน On the Origin of Species", "มารี คูรี ได้โนเบล 2 ครั้ง (ฟิสิกส์/เคมี)", "สตีฟ จอบส์ เคยถูกปลดออกจาก Apple", "ไอน์สไตน์ได้โนเบลจากสัมพัทธภาพพิเศษ"],
+    ans: 4,
+    expl: "ไอน์สไตน์ได้โนเบลจากคำอธิบายปรากฏการณ์โฟโตอิเล็กทริก ไม่ใช่สัมพัทธภาพพิเศษ"
+  },
+  {
+    year: "TPAT3 ธ.ค. 65",
+    q: "สัญลักษณ์ในข้อใดต่อไปนี้บ่งชี้ว่าเป็นบริเวณที่มีรังสี",
+    opts: ["เครื่องหมายตกใจ (!)", "ใบพัด 3 แฉก (Trefoil)", "หัวกะโหลกไขว้", "เปลวไฟ", "ต้นไม้ตายและปลาตาย"],
+    ans: 1,
+    expl: "สัญลักษณ์รังสีคือรูปใบพัด 3 แฉก (Trefoil)"
+  },
+
+  {
+    year: "TPAT3 ธ.ค. 66",
+    q: "อุบัติเหตุที่เกิดขึ้นกับเรือดำน้ำ Titan เกิดจากสาเหตุใด",
+    opts: ["การขาดแคลนออกซิเจน", "การขัดข้องของเครื่องยนต์", "โครงสร้างเรือดำน้ำรับแรงดันใต้น้ำไม่ไหว", "การชนกับภูเขาใต้ทะเล", "การเกิดเพลิงไหม้"],
+    ans: 2,
+    expl: "เกิดการ Implosion เพราะโครงสร้างรับแรงดันน้ำลึกไม่ไหว"
+  },
+  {
+    year: "TPAT3 ธ.ค. 66",
+    q: "โซลาเซลล์ไฮบริดลอยน้ำที่ใหญ่ที่สุดในโลกอยู่ที่ประเทศอะไร (ณ ปี 2566)",
+    opts: ["ไทย", "ญี่ปุ่น", "จีน", "อินเดีย", "สหรัฐอเมริกา"],
+    ans: 0,
+    expl: "โครงการใหญ่ที่เขื่อนสิรินธร จ.อุบลราชธานี ประเทศไทย"
+  },
+  {
+    year: "TPAT3 ธ.ค. 66",
+    q: "Net-Zero Emission คืออะไร",
+    opts: ["ยับยั้งการปล่อยก๊าซเรือนกระจกให้เป็นศูนย์", "ปล่อยก๊าซเรือนกระจกให้น้อยที่สุด", "การชดเชยการปล่อยก๊าซเรือนกระจกทั้งหมดโดยการดูดซับหรือกำจัดออก", "เพิ่มการใช้พลังงานหมุนเวียนสูงสุด", "ลดการใช้พลังงานทุกภาคส่วน"],
+    ans: 2,
+    expl: "Net-Zero คือความสมดุลระหว่างปล่อยกับดูดซับกลับไป (สุทธิเป็นศูนย์)"
+  },
+  {
+    year: "TPAT3 ธ.ค. 66",
+    q: "ปรากฏการณ์ “ลานีญา” ส่งผลต่อภูมิอากาศในประเทศไทยอย่างไร",
+    opts: ["ฤดูร้อนยาวนาน อุณหภูมิสูง", "ฤดูฝนมีฝนตกมากขึ้นและเสี่ยงน้ำท่วม", "ฤดูหนาวเย็นและแห้งกว่าปกติ", "ฤดูฝนมีฝนน้อยลงและแล้ง", "ไม่มีผลกระทบ"],
+    ans: 1,
+    expl: "ลานีญา = ฝนเยอะ น้ำท่วม (ตรงข้ามเอลนีโญที่แล้ง)"
+  },
+  {
+    year: "TPAT3 ธ.ค. 66",
+    q: "ประเทศใดประสบความสำเร็จในการส่งยานอวกาศไปดวงจันทร์ เมื่อเดือนสิงหาคม ค.ศ. 2023 ที่ผ่านมา",
+    opts: ["จีน", "ญี่ปุ่น", "อินเดีย", "สหรัฐอเมริกา", "รัสเซีย"],
+    ans: 2,
+    expl: "อินเดียส่งยาน Chandrayaan-3 ลงจอดที่ขั้วใต้ของดวงจันทร์สำเร็จ"
+  },
+  {
+    year: "TPAT3 ธ.ค. 66",
+    q: "ข้อใดแตกต่างจากข้ออื่น",
+    opts: ["Bentley", "Chrysler", "Changan", "SpaceX", "Tata"],
+    ans: 3,
+    expl: "SpaceX เป็นบริษัทเทคโนโลยีอวกาศ"
+  },
+  {
+    year: "TPAT3 ธ.ค. 66",
+    q: "ประเทศญี่ปุ่นปล่อยน้ำหล่อเย็นเครื่องปฏิกรณ์ฟุกุชิมะ น้ำดังกล่าวมีสารปนเปื้อนรังสีไอโซโทปใด",
+    opts: ["H-3 (Tritium)", "U-235", "C-14", "Sr-90", "Ra-226"],
+    ans: 0,
+    expl: "เหลือไตรเทียม (Tritium หรือ Hydrogen-3) ที่แยกออกได้ยาก"
+  },
+  {
+    year: "TPAT3 ธ.ค. 66",
+    q: "ในสงครามรัสเซีย-ยูเครน มีการใช้กระสุนเจาะเกราะที่มีสารกัมมันตรังสี สารนั้นคือธาตุใด",
+    opts: ["โคบอลต์", "ตะกั่ว", "ซีเซียม", "พลูโตเนียม", "ยูเรเนียม"],
+    ans: 4,
+    expl: "ยูเรเนียมด้อยสมรรถนะ (Depleted Uranium)"
+  },
+  {
+    year: "TPAT3 ธ.ค. 66",
+    q: "เพราะเหตุใดจึงเรียกเครื่องปฏิกรณ์ฟิวชันว่า “ดวงอาทิตย์จำลอง”",
+    opts: ["มีอุณหภูมิเท่าดวงอาทิตย์", "ใช้พลังงานแสงอาทิตย์ทำงาน", "สร้างแสงสว่างเท่าดวงอาทิตย์", "จำลองกระบวนการเกิดพลังงานเช่นเดียวกับดวงอาทิตย์", "ใช้พลังงานจากดวงอาทิตย์"],
+    ans: 3,
+    expl: "เพราะใช้หลักการ Nuclear Fusion เหมือนดวงอาทิตย์"
+  },
+  {
+    year: "TPAT3 ธ.ค. 66",
+    q: "Iron Dome คืออะไร",
+    opts: ["ระบบเลเซอร์วัดระยะ", "ระบบเรดาห์ตรวจจับ", "ระบบป้องกันขีปนาวุธ", "ระบบเตือนภัยอัจฉริยะ", "ไม่มีข้อใดถูก"],
+    ans: 2,
+    expl: "ระบบป้องกันภัยทางอากาศ สกัดกั้นขีปนาวุธระยะใกล้"
+  },
+
+  {
+    year: "TPAT3 ธ.ค. 67 (ฉบับ 1)",
+    q: "ปัจจุบันประเทศไทยผลิตกระแสไฟฟ้าส่วนใหญ่จากแหล่งพลังงานประเภทใด (ซึ่งเป็นแหล่งหลักสำหรับชาร์จ EV)",
+    opts: ["พลังงานหมุนเวียน", "พลังงานจากถ่านหิน", "พลังงานจากก๊าซธรรมชาติ", "พลังงานนิวเคลียร์", "พลังงานชีวมวลและขยะ"],
+    ans: 2,
+    expl: "ไทยผลิตไฟฟ้าจากก๊าซธรรมชาติเป็นสัดส่วนมากที่สุด"
+  },
+  {
+    year: "TPAT3 ธ.ค. 67 (ฉบับ 1)",
+    q: "การใช้น้ำยาล้างห้องน้ำผสมกับสารบางอย่าง (เช่น โซดาไฟ/ไฮเตอร์) อาจเกิดก๊าซพิษชนิดใด",
+    opts: ["NO", "CO", "H2S", "O3", "CO2"],
+    ans: 2,
+    expl: "ก๊าซไข่เน่า (Hydrogen Sulfide - H2S)"
+  },
+  {
+    year: "TPAT3 ธ.ค. 67 (ฉบับ 1)",
+    q: "ข้อใดต่างจากพวก (กลุ่มมัลแวร์ vs สกุลเงิน)",
+    opts: ["Cryptolocker", "Bitcoin", "Zcyrtors", "Fusob", "Crytrowall"],
+    ans: 1,
+    expl: "Bitcoin เป็นสกุลเงินดิจิทัล ข้ออื่นเป็นมัลแวร์"
+  },
+  {
+    year: "TPAT3 ธ.ค. 67 (ฉบับ 1)",
+    q: "ข้อใดกล่าวถูกต้องเกี่ยวกับ “Green Screen” ในงานสื่อ",
+    opts: ["ฉากพื้นหลังสีเขียวใช้ตัดต่อ/ใส่เอฟเฟกต์", "โรงงานปลูกพืชรักษ์โลก", "ผ้าสักหลาดโต๊ะสนุ๊ก", "เครื่องมือกรองแสงสีเขียว", "เทคโนโลยีปลูกพืชในอวกาศ"],
+    ans: 0,
+    expl: "Green Screen คือฉากสีเขียวสำหรับทำ Chroma Keying"
+  },
+  {
+    year: "TPAT3 ธ.ค. 67 (ฉบับ 1)",
+    q: "ข้อใดกล่าวถูกต้องเกี่ยวกับ Machine Learning",
+    opts: ["ระบบที่เรียนรู้/ปรับปรุงได้จากประสบการณ์", "วิเคราะห์ข้อมูลตามคำสั่งตายตัว", "ใช้เก็บข้อมูลขนาดใหญ่เท่านั้น", "คาดเดาโดยไม่ต้องเรียนรู้", "ต้องอัปเดตคำสั่งทุกครั้งโดยมนุษย์"],
+    ans: 0,
+    expl: "Machine Learning คือ AI ที่เรียนรู้จากข้อมูลเพื่อสร้างโมเดล"
+  },
+  {
+    year: "TPAT3 ธ.ค. 67 (ฉบับ 1)",
+    q: "จังหวัดใดในไทยเสี่ยงได้รับผลกระทบจากพายุโซนร้อน/ไต้ฝุ่นมากที่สุด",
+    opts: ["สุราษฎร์ธานี", "เชียงใหม่", "หนองคาย", "อุบลราชธานี", "นครราชสีมา"],
+    ans: 3,
+    expl: "อุบลราชธานี อยู่ด่านหน้ารับพายุที่เคลื่อนมาจากเวียดนาม/ลาว"
+  },
+  {
+    year: "TPAT3 ธ.ค. 67 (ฉบับ 1)",
+    q: "โครงการ Carbon Capture ที่ไอซ์แลนด์ จัดการกับคาร์บอนอย่างไร",
+    opts: ["ทราย", "หิน", "ออกซิเจน", "ท่อนาโนคาร์บอน", "น้ำแข็งแห้ง"],
+    ans: 1,
+    expl: "Mineralization เปลี่ยนคาร์บอนให้กลายเป็นหินในชั้นหินบะซอลต์"
+  },
+  {
+    year: "TPAT3 ธ.ค. 67 (ฉบับ 1)",
+    q: "เหตุการณ์ Sci-fi ข้อใด 'สามารถเกิดขึ้นจริง' ได้ในปัจจุบัน",
+    opts: ["มนุษย์จำศีลส่งไปอวกาศ", "วัตถุเคลื่อนที่เร็วกว่าแสง", "เครื่องย้อนเวลา", "ยานอวกาศเข้าหลุมดำ", "ส่งวัตถุออกนอกระบบสุริยะ"],
+    ans: 4,
+    expl: "ยาน Voyager ออกนอกระบบสุริยะแล้ว"
+  },
+  {
+    year: "TPAT3 ธ.ค. 67 (ฉบับ 1)",
+    q: "ท่อขนาด 4 หุน คือท่อขนาดเท่าใด",
+    opts: ["1/4 นิ้ว", "1/2 นิ้ว", "3/8 นิ้ว", "1 นิ้ว", "4 เซนติเมตร"],
+    ans: 1,
+    expl: "1 นิ้ว = 8 หุน ดังนั้น 4 หุน = 1/2 นิ้ว"
+  },
+  {
+    year: "TPAT3 ธ.ค. 67 (ฉบับ 1)",
+    q: "ติดตั้งโซลาร์เซลล์ในไทยให้มีประสิทธิภาพสูงสุด ควรหันทางทิศใด",
+    opts: ["ตั้งฉากแกนโลก", "ทิศใต้", "ทิศตะวันออก", "ทิศตะวันตก", "ทิศเหนือ"],
+    ans: 1,
+    expl: "ไทยอยู่เหนือเส้นศูนย์สูตร พระอาทิตย์อ้อมใต้ส่วนใหญ่ จึงควรหันแผงทิศใต้"
+  },
+
+  {
+    year: "TPAT3 ธ.ค. 67 (ฉบับ 2)",
+    q: "“อินเวอร์เตอร์” (Inverter) มีบทบาทสำคัญอย่างไร",
+    opts: ["แปลงไฟ AC เป็น DC", "ควบคุมแรงดันให้นิ่ง", "แปลงไฟ DC เป็น AC", "เพิ่มความเร็วรอบมอเตอร์", "เก็บพลังงานไว้ใช้ภายหลัง"],
+    ans: 2,
+    expl: "Inverter แปลงไฟ DC (จากโซลาร์/แบต) ให้เป็น AC เพื่อใช้งาน"
+  },
+  {
+    year: "TPAT3 ธ.ค. 67 (ฉบับ 2)",
+    q: "หากน้ำแข็งขั้วโลกละลาย ขั้วใดจะส่งผลให้ระดับน้ำทะเลทั่วโลกสูงขึ้นอย่างมีนัยสำคัญ",
+    opts: ["ขั้วโลกเหนือ", "ขั้วโลกใต้ (น้ำแข็งบนพื้นดิน)", "ขั้วโลกเหนือ (ละลายเร็วกว่า)", "ผลเท่ากัน", "ไม่มีผล"],
+    ans: 1,
+    expl: "ขั้วโลกใต้เป็นน้ำแข็งบนแผ่นดิน ละลายแล้วเติมน้ำลงทะเล"
+  },
+  {
+    year: "TPAT3 ธ.ค. 67 (ฉบับ 2)",
+    q: "ประเทศใดเป็นประเทศแรกของโลกที่นำยานลงจอดบน “ด้านมืดของดวงจันทร์” สำเร็จ",
+    opts: ["สหรัฐอเมริกา", "รัสเซีย", "จีน", "อินเดีย", "ญี่ปุ่น"],
+    ans: 2,
+    expl: "จีน (ฉางเอ๋อ 4) ลงจอดด้านไกลของดวงจันทร์สำเร็จเป็นชาติแรก"
+  },
+  {
+    year: "TPAT3 ธ.ค. 67 (ฉบับ 2)",
+    q: "การเสียชีวิตจากการดื่ม “ยาดอง” สาเหตุที่เป็นไปได้มากที่สุดคือสารใด",
+    opts: ["แพ้สมุนไพร", "ดื่มพร้อมอาหารมัน", "เมทานอล (Methanol)", "ดื่มน้ำตามมากเกินไป", "ดื่มตอนท้องว่าง"],
+    ans: 2,
+    expl: "เหล้าเถื่อน/ยาดองมักปนเมทานอล ซึ่งเป็นพิษ"
+  },
+  {
+    year: "TPAT3 ธ.ค. 67 (ฉบับ 2)",
+    q: "เหตุใดจึงต้องควบคุมการซื้อยาลดน้ำมูกที่มีสาร “ซูโดอีเฟดรีน”",
+    opts: ["ฤทธิ์กดประสาท", "เป็นสารตั้งต้นผลิตยาเสพติด", "ทำให้ดื้อยาปฏิชีวนะ", "ทำให้ความดันต่ำ", "ทำให้ภูมิคุ้มกันลดลง"],
+    ans: 1,
+    expl: "ซูโดอีเฟดรีนนำไปสกัดเป็นสารตั้งต้นผลิตเมทแอมเฟตามีนได้"
+  },
+  {
+    year: "TPAT3 ธ.ค. 67 (ฉบับ 2)",
+    q: "เหตุใดอาหารทอดจึงมักใช้น้ำมันที่มีกรดไขมันอิ่มตัว",
+    opts: ["ราคาถูกกว่า", "จุดเดือดต่ำ", "ทนความร้อนได้ดี ไม่เหม็นหืนง่าย", "ละลายสารอาหารดีกว่า", "ทำให้อาหารเงางาม"],
+    ans: 2,
+    expl: "ไขมันอิ่มตัวทนความร้อนสูงและออกซิไดซ์ยากกว่า"
+  },
+  {
+    year: "TPAT3 ธ.ค. 67 (ฉบับ 2)",
+    q: "หลักการทำงานของชุดตรวจโควิดแบบ Antigen Test คือข้อใด",
+    opts: ["ตรวจหา DNA ไวรัส", "ตรวจหาแอนติบอดี", "ตรวจสารพันธุกรรมด้วย PCR", "ตรวจหาโปรตีนของไวรัสโดยใช้แอนติบอดีบนแถบ", "ตรวจหาเม็ดเลือดขาว"],
+    ans: 3,
+    expl: "ATK ตรวจหาโปรตีนของไวรัส (Antigen)"
+  },
+  {
+    year: "TPAT3 ธ.ค. 67 (ฉบับ 2)",
+    q: "ข้อใดกล่าวถูกต้องเกี่ยวกับ IoT (Internet of Things)",
+    opts: ["ส่งข้อมูลผ่านสายไฟแรงสูง", "ประมวลผลในคอมพิวเตอร์เท่านั้น", "ใช้เฉพาะการทหาร", "โทรศัพท์โทรได้ไม่ง้อเน็ต", "อุปกรณ์ต่างๆ เชื่อมต่ออินเทอร์เน็ตและสื่อสารกันได้"],
+    ans: 4,
+    expl: "IoT คืออุปกรณ์ต่างๆ เชื่อมต่อเน็ตและสื่อสาร/ส่งข้อมูลกันได้"
+  },
+  {
+    year: "TPAT3 ธ.ค. 67 (ฉบับ 2)",
+    q: "เหตุการณ์จอฟ้า (Blue Screen) จาก CrowdStrike เกิดจากสาเหตุใด",
+    opts: ["Ransomware", "อัปเดตซอฟต์แวร์มีบั๊กกระทบ Kernel Windows", "ถูกแฮ็ก", "มัลแวร์", "DDoS"],
+    ans: 1,
+    expl: "อัปเดตไฟล์ Falcon Sensor ผิดพลาดกระทบระบบ Windows"
+  },
+  {
+    year: "TPAT3 ธ.ค. 67 (ฉบับ 2)",
+    q: "Bitcoin ใช้เทคโนโลยีอะไร",
+    opts: ["AI", "Blockchain", "Quantum Computing", "VR", "ถูกทุกข้อ"],
+    ans: 1,
+    expl: "Bitcoin ทำงานบนเทคโนโลยี Blockchain"
+  }
+];
+
+let idx = 0;
+let score = 0;
+let correct = 0;
+let wrong = 0;
+let locked = false;
+
+const badge = document.getElementById("badge");
+const qtext = document.getElementById("qtext");
+const opts = document.getElementById("opts");
+const fb = document.getElementById("fb");
+const btnNext = document.getElementById("btnNext");
+const progress = document.getElementById("progress");
+const statTop = document.getElementById("statTop");
+const statBottom = document.getElementById("statBottom");
+
+const quiz = document.getElementById("quiz");
+const result = document.getElementById("result");
+const finalScore = document.getElementById("finalScore");
+const finalMsg = document.getElementById("finalMsg");
+
+function updateStats(){
+  const total = examData.length || 1;
+  statTop.textContent = `${Math.min(idx+1,total)}/${total} • ${score} คะแนน`;
+  statBottom.textContent = `ถูก ${correct} • ผิด ${wrong}`;
+}
+
+function render(){
+  locked = false;
+  btnNext.style.display = "none";
+  fb.style.display = "none";
+  fb.innerHTML = "";
+
+  const total = examData.length;
+  if(total === 0){
+    qtext.textContent = "ยังไม่มีคำถาม";
+    opts.innerHTML = "";
+    progress.style.width = "0%";
+    updateStats();
+    return;
+  }
+
+  const q = examData[idx];
+  badge.textContent = q.year || "—";
+  badge.className = (String(q.year||"").includes("เก็ง")) ? "badge predict" : "badge";
+
+  qtext.textContent = `${idx+1}/${total} • ${q.q}`;
+  opts.innerHTML = "";
+
+  q.opts.forEach((t,i)=>{
+    const b = document.createElement("button");
+    b.className = "option";
+    b.textContent = t;
+    b.onclick = ()=>pick(i,b);
+    opts.appendChild(b);
+  });
+
+  progress.style.width = `${((idx+1)/total)*100}%`;
+  updateStats();
+}
+
+function pick(i, btn){
+  if(locked) return;
+  locked = true;
+
+  const q = examData[idx];
+  const all = Array.from(opts.querySelectorAll(".option"));
+  all.forEach(x=>x.disabled=true);
+
+  if(i === q.ans){
+    btn.classList.add("correct");
+    score += 1;
+    correct += 1;
+  }else{
+    btn.classList.add("wrong");
+    all[q.ans].classList.add("correct");
+    wrong += 1;
+  }
+
+  fb.innerHTML = `<b>เฉลย:</b> ${q.opts[q.ans]}<br><br>${q.expl || ""}`;
+  fb.style.display = "block";
+  btnNext.style.display = "inline-block";
+  updateStats();
+}
+
+function next(){
+  if(!locked) return;
+
+  const total = examData.length;
+  if(idx < total - 1){
+    idx += 1;
+    render();
+  }else{
+    showResult();
+  }
+}
+
+function showResult(){
+  progress.style.width = "100%";
+  quiz.style.display = "none";
+  result.style.display = "block";
+  finalScore.textContent = `${score} / ${examData.length}`;
+
+  const pct = (score / (examData.length || 1)) * 100;
+  if(pct >= 80) finalMsg.textContent = "โหดจัด ✅ พร้อมไปสอบจริงแบบไม่ต้องขอพรเพิ่ม";
+  else if(pct >= 50) finalMsg.textContent = "ดีมาก! เหลือไล่ข้อที่พลาดให้คมอีกนิดเดียว";
+  else finalMsg.textContent = "ยังไหว—แต่ต้องยิงซ้ำวน ๆ เดี๋ยวความจำมันจะยอมแพ้ก่อนเรา";
+}
+
+document.getElementById("btnBack").onclick = ()=>{
+  if(history.length > 1) history.back();
+  else location.href = "index.html";
+};
+
+btnNext.onclick = next;
+
+document.getElementById("btnAgain").onclick = ()=>{
+  idx = 0;
+  score = 0;
+  correct = 0;
+  wrong = 0;
+  locked = false;
+  result.style.display = "none";
+  quiz.style.display = "block";
+  render();
+};
+
+render();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+
+  <!-- iOS / iPadOS safe + PWA-ish -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0ea5e9" />
+
+  <!-- Viewport: ใส่ viewport-fit=cover เพื่อ safe-area -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <title>TPAT 3 Mock Test ปี 69: ข่าวสารและเทคโนโลยี (ข้อ 61-70)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --primary:#0ea5e9;
+      --primary-hover:#0284c7;
+      --success:#22c55e;
+      --error:#ef4444;
+      --bg:#f0f9ff;
+      --card-bg:#ffffff;
+      --text:#0f172a;
+      --text-light:#64748b;
+    }
+
+    *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+
+    html, body{ height:100%; }
+    html{
+      -webkit-text-size-adjust: 100%;
+      scroll-behavior: smooth;
+    }
+
+    body{
+      font-family:'Sarabun', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin:0;
+
+      padding:
+        calc(16px + env(safe-area-inset-top))
+        calc(16px + env(safe-area-inset-right))
+        calc(16px + env(safe-area-inset-bottom))
+        calc(16px + env(safe-area-inset-left));
+
+      display:flex;
+      justify-content:center;
+      min-height:100svh;
+    }
+
+    .container{
+      width:100%;
+      max-width:700px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,.1);
+      padding: clamp(16px, 4vw, 32px);
+      position: relative;
+    }
+
+    header{
+      text-align:center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #e0f2fe;
+    }
+
+    h1{
+      color: var(--primary);
+      font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+      margin:0 0 .5rem 0;
+    }
+
+    .subtitle{
+      color: var(--text-light);
+      font-size: .95rem;
+      line-height: 1.35;
+    }
+
+    .progress-container{ margin-bottom: 1.25rem; }
+
+    .progress-bar{
+      width:100%;
+      height:10px;
+      background:#e2e8f0;
+      border-radius:999px;
+      overflow:hidden;
+    }
+
+    .progress-fill{
+      height:100%;
+      background: var(--primary);
+      width:0%;
+      transition: width .25s ease;
+    }
+
+    .question-card{ display:none; animation: fadeIn .35s ease; }
+    .question-card.active{ display:block; }
+
+    .question-text{
+      font-size: clamp(1.05rem, 2.1vw, 1.2rem);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height:1.55;
+    }
+
+    .options{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .option-btn{
+      padding: 14px 14px;
+      border: 2px solid #e2e8f0;
+      border-radius: 14px;
+      background:#fff;
+      color: var(--text);
+      font-family:'Sarabun', sans-serif;
+      font-size: 16px; /* iOS กันซูม */
+      text-align:left;
+      cursor:pointer;
+      transition: transform .06s ease, background .15s ease, border-color .15s ease;
+      position:relative;
+      user-select:none;
+      -webkit-user-select:none;
+      touch-action: manipulation;
+    }
+
+    .option-btn:active:not(:disabled){
+      transform: scale(.985);
+      border-color: var(--primary);
+      background: #f0f9ff;
+    }
+
+    .option-btn:disabled{ cursor:not-allowed; opacity: .95; }
+
+    .option-btn.correct{
+      background:#dcfce7;
+      border-color: var(--success);
+      color:#14532d;
+      font-weight:700;
+    }
+    .option-btn.wrong{
+      background:#fee2e2;
+      border-color: var(--error);
+      color:#7f1d1d;
+      opacity:.85;
+    }
+
+    .feedback{
+      margin-top: 1rem;
+      padding: 1rem;
+      background:#f0f9ff;
+      border-radius: 14px;
+      border-left: 6px solid var(--primary);
+      display:none;
+    }
+
+    .feedback h4{
+      margin:0 0 .4rem 0;
+      color: var(--primary);
+      font-size: 1rem;
+    }
+
+    .feedback p{
+      margin:0;
+      font-size: 16px;
+      line-height:1.55;
+      color: #0f172a;
+    }
+
+    .btn-next{
+      background: var(--primary);
+      color:#fff;
+      border:none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 16px;
+      font-family:'Sarabun', sans-serif;
+      font-weight:700;
+      cursor:pointer;
+      margin-top: 1rem;
+      width:100%;
+      display:none;
+      transition: transform .06s ease, background .15s ease;
+    }
+
+    .btn-next:active{ transform: scale(.99); }
+    .btn-next:hover{ background: var(--primary-hover); }
+
+    .score-container{
+      text-align:center;
+      display:none;
+      padding: 1.5rem 0 0;
+    }
+
+    .score-circle{
+      width: 160px;
+      height: 160px;
+      background: conic-gradient(var(--primary) 0%, #e2e8f0 0%);
+      border-radius: 50%;
+      margin: 0 auto 1.25rem;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      position:relative;
+    }
+
+    .score-circle::before{
+      content:"";
+      position:absolute;
+      width: 126px;
+      height: 126px;
+      background:#fff;
+      border-radius:50%;
+    }
+
+    .score-text{
+      position:relative;
+      font-size: 1.8rem;
+      font-weight:800;
+      color: var(--primary);
+    }
+
+    .restart-btn{
+      background: var(--text);
+      color:#fff;
+      border:none;
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 16px;
+      cursor:pointer;
+      font-family:'Sarabun', sans-serif;
+      font-weight:700;
+      width:100%;
+    }
+
+    /* ✅ ปุ่มกลับหน้าแรก (ลอย) + safe-area */
+    .btn-home{
+      position: fixed;
+      top: calc(12px + env(safe-area-inset-top));
+      left: calc(12px + env(safe-area-inset-left));
+      z-index: 999;
+
+      background: #0f172a;
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+
+      font-family: 'Sarabun', sans-serif;
+      font-size: 16px; /* iOS กันซูม */
+      font-weight: 800;
+
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(0,0,0,.18);
+      transition: transform .08s ease, background .15s ease, opacity .15s ease;
+    }
+    .btn-home:active{
+      transform: scale(.96);
+      background: #020617;
+    }
+
+    @keyframes fadeIn{
+      from{ opacity:0; transform: translateY(10px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
+
+    @media (min-width: 768px){
+      .btn-next{ width:auto; float:right; }
+      .restart-btn{ width:auto; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ✅ ปุ่มกลับหน้าแรก -->
+  <button class="btn-home" onclick="goHome()">← หน้าหลัก</button>
+
+  <div class="container">
+    <header>
+      <h1>TPAT 3 MOCK TEST ปี 69</h1>
+      <div class="subtitle">ความสนใจข่าวสาร ความรู้ทางด้านวิทยาศาสตร์ เทคโนโลยี และวิศวกรรมศาสตร์ (ข้อ 61-70)</div>
+    </header>
+
+    <div class="progress-container" id="progress-container">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <div style="text-align:right;font-size:.85rem;margin-top:6px;color:var(--text-light);">
+        ข้อ <span id="current-q">1</span> / <span id="total-q">10</span>
+      </div>
+    </div>
+
+    <div id="quiz-area"></div>
+
+    <div class="score-container" id="score-card">
+      <h2 style="margin:0 0 1rem 0;">สรุปผลการทดสอบ</h2>
+      <div class="score-circle" id="score-chart">
+        <div class="score-text" id="final-score">0</div>
+      </div>
+      <p id="score-msg" style="margin:0 0 1.25rem 0; font-size:16px;">...</p>
+      <button class="restart-btn" onclick="restartQuiz()">ทำแบบทดสอบอีกครั้ง</button>
+    </div>
+  </div>
+
+  <script>
+    function goHome(){
+      window.location.href = "index.html";
+    }
+
+    const quizData = [
+      {
+        id: 61,
+        question: "ยานอวกาศเอกชนลำแรก ลงจอดบนดวงจันทร์สำเร็จ เป็นของชาติใด",
+        options: ["จีน","สหรัฐอเมริกา","รัสเซีย","ญี่ปุ่น","อังกฤษ"],
+        correctIndex: 1,
+        rationale: "เมื่อเวลา 15.34 น. ของวันที่ 2 มีนาคม 2025 ยานอวกาศเอกชนสหรัฐฯ ชื่อ Blue Ghost ภารกิจที่ 1 ของบริษัท Firefly Aerospace ประสบความสำเร็จในการลงจอดใกล้กับภูเขา Mons Latreille บริเวณด้านใกล้ของดวงจันทร์ เป็นยานอวกาศลำแรกของบริษัทเอกชนที่เดินทางไปลงจอดบนดวงจันทร์อย่างนุ่มนวลได้สำเร็จ"
+      },
+      {
+        id: 62,
+        question: "แผ่นดินไหวครั้งใหญ่ขนาด 8.2 แมกนิจูด ที่เกิดขึ้นเมื่อวันที่ 28 มี.ค. 2568 มีศูนย์กลางอยู่ที่ประเทศใด",
+        options: ["ไทย","ลาว","กัมพูชา","พม่า","มาเลเซีย"],
+        correctIndex: 3,
+        rationale: "แผ่นดินไหวรุนแรงขนาด 8.2 แมกนิจูด ลึกจากพื้นดินราว 10 กม. มีศูนย์กลางอยู่ในประเทศเมียนมา (พม่า) ตามรายงานโดยกรมอุตุนิยมวิทยา โดยเหตุแผ่นดินไหวครั้งนี้เกิดขึ้นเวลาประมาณ 13.20 น. ของวันที่ 28 มี.ค. แต่ส่งแรงสะเทือนถึงประเทศไทยหลายพื้นที่ รวมถึงกรุงเทพมหานคร ที่สามารถรับรู้สึกได้ถึงแรงสั่นสะเทือนได้"
+      },
+      {
+        id: 63,
+        question: "ในปี 2568 นี้ บริษัท Colossal Biosciences ในสหรัฐฯ ได้ฟื้นคืนชีพ สิ่งมีชีวิตโบราณใดได้สำเร็จ",
+        options: ["ช้างแมมมอธ","หมาป่าสีเทา","หมาป่าไดร์วูลฟ์","เสือเขี้ยวดาบ","นกโดโด"],
+        correctIndex: 2,
+        rationale: "บริษัท Colossal Biosciences ในสหรัฐฯ ได้ฟื้นคืนชีพ \"ไดร์วูลฟ์\" (Direwolf) หมาป่าดึกดำบรรพ์ ที่สูญพันธุ์ไปเมื่อ 10,000 ปีก่อน ให้กลับมามีชีวิตอีกครั้ง โดยหมาป่าที่ผ่านการดัดแปลงพันธุกรรม 3 ตัว กำลังเติบโตในสถานที่ปลอดภัยที่ไม่เปิดเผยในสหรัฐฯ"
+      },
+      {
+        id: 64,
+        question: "วันที่ 7 พ.ค. 2568 คณะนักวิทยาศาสตร์ที่เซิร์น (CERN) ได้ทำการเล่นแร่แปรธาตุ เปลี่ยนธาตุใดไปเป็นธาตุใดได้สำเร็จ",
+        options: ["เปลี่ยนตะกั่วไปเป็นทองคำ","เปลี่ยนตะกั่วไปเป็นเงิน","เปลี่ยนทองคำไปเป็นตะกั่ว","เปลี่ยนเหล็กไปเป็นทองคำ","เปลี่ยนเงินไปเป็นตะกั่ว"],
+        correctIndex: 0,
+        rationale: "วันที่ 7 พฤษภาคม ค.ศ. 2025 คณะนักวิทยาศาสตร์ที่ องค์การวิจัยนิวเคลียร์ยุโรป (CERN) ประเทศสวิตเซอร์แลนด์ รายงานผลการทดลองกับเครื่องเร่งอนุภาคทรงพลังที่สุดในโลก แอลเอชซี (LHC) พบอะตอมของตะกั่วจำนวนหนึ่งเปลี่ยนไปเป็นทองคำ"
+      },
+      {
+        id: 65,
+        question: "ข้อใดคือสาเหตุการเสียชีวิตของชายชาวอเมริกัน ที่สวมสร้อยคอโลหะเข้าไปใกล้เครื่อง MRI ที่ศูนย์การแพทย์ในนิวยอร์ก เมื่อวันที่ 16 ก.ค. 2568",
+        options: ["ถูกระแสไฟฟ้าเหนี่ยวนำจากสร้อยคอช็อต","โลหะเข้าใกล้ทำให้เครื่อง MRI เกิดระเบิด","ถูกความร้อนจากสร้อยคอเผา","ถูกแรงแม่เหล็กดึงสร้อยคอไปกระแทกกับเครื่อง MRI","สร้อยคอเกิดการระเบิด"],
+        correctIndex: 3,
+        rationale: "ชายวัย 61 ปี เสียชีวิตในเครื่องตรวจ MRI ที่ศูนย์การแพทย์ในนิวยอร์ก หลังถูกแรงแม่เหล็กดูดร่างเข้าไปกระแทกกับเครื่อง MRI ขณะสวมสร้อยคอโลหะหนัก 9 กก. เหตุการณ์นี้ตอกย้ำถึงอันตรายจากการละเลยคำเตือนให้ถอดวัตถุโลหะก่อนเข้าใกล้เครื่อง MRI"
+      },
+      {
+        id: 66,
+        question: "ในช่วงเดือน ก.ค. 2568 ได้เกิดเหตุขัดแย้งระหว่างไทยและกัมพูชา หนึ่งในชนวนความขัดแย้งระหว่างไทยและกัมพูชา คือ แผนที่ มาตราส่วนของแผนที่ใด ที่ ไทย และ กัมพูชา ต้องการใช้ ตามลำดับ",
+        options: ["1:20000 และ 1:500000","1:50000 และ 1:200000","1:200000 และ 1:50000","1:500000 และ 1:20000","1:500000 และ 1:200000"],
+        correctIndex: 1,
+        rationale: "กรณีปราสาทเขาพระวิหาร ในปี พ.ศ. 2505 ศาลยุติธรรมระหว่างประเทศ (ICJ) ตัดสินให้ปราสาทเป็นของกัมพูชา โดยอ้างแผนที่ 1:200,000 ที่กัมพูชาใช้ (และไทยยอมรับโดยปริยาย) แม้ไทยจะโต้แย้งว่าต้องใช้แผนที่ 1:50,000 ซึ่งตรงตามหลักปักปันเขตแดนจริง แต่ศาลยึดตามหลักฐานแผนที่ 1:200,000"
+      },
+      {
+        id: 67,
+        question: "ทำไมสหประชาชาติจึงกำหนดให้ปี 2568 เป็นปีวิทยาศาสตร์และเทคโนโลยีควอนตัมสากล",
+        options: ["ครบรอบ 50 ปี ผลงานการแผ่รังสีของวัตถุดำ ของ มักซ์ พลังค์","ครบรอบ 50 ปี ผลงานกลศาสตร์คลื่นควอนตัม ของ เออร์วิน ชโรดิงเจอร์","ครบรอบ 50 ปี ผลงานกลศาสตร์เมทริกซ์ ของ แม็กซ์ บอร์น และ ปัสกัล จอร์แดน","ครบรอบ 100 ปี ผลงานการแผ่รังสีของวัตถุดำ ของ มักซ์ พลังค์","ครบรอบ 100 ปี ผลงานกลศาสตร์คลื่นควอนตัม ของ เออร์วิน ชโรดิงเจอร์"],
+        correctIndex: 4,
+        rationale: "ปี พ.ศ. 2568 เป็นปีวิทยาศาสตร์และเทคโนโลยีควอนตัมสากล เพราะเป็นปีครบรอบ 100 ปี ที่นักฟิสิกส์ คือ เออร์วิน ชโรดิงเจอร์ (Erwin Schrodinger) ได้สร้างกลศาสตร์คลื่นควอนตัม (quantum wave mechanics) หรือสมการคลื่นชโรดิงเจอร์ ซึ่งทำให้ทฤษฎีควอนตัมใช้งานได้อย่างเป็นรูปธรรม"
+      },
+      {
+        id: 68,
+        question: "Nano Banana คืออะไร",
+        options: ["Generative Al ชนิดหนึ่ง","ชื่อของบอร์ดไมโครคอนโทรลเลอร์","ชื่อสายพันธ์กล้วยขนาดเล็ก","อาวุธสงครามรูปแบบหนึ่ง","ชื่อร้านขายอุปกรณ์ไอที"],
+        correctIndex: 0,
+        rationale: "\"Nano Banana\" เป็นชื่อโค้ดลับที่ Google ใช้เรียกฟีเจอร์ใหม่ที่พัฒนาต่อยอดจากความสามารถของ Gemini โดยเฉพาะในรุ่นที่ทำงานบนอุปกรณ์อย่าง Gemini Nano ซึ่งจุดเด่นคือการเป็น Multimodal AI ที่มี \"ดวงตา\" มองเห็นโลกจริงผ่านกล้องสมาร์ทโฟนได้"
+      },
+      {
+        id: 69,
+        question: "ในวันที่ 14 ต.ค. 2568 Microsoft จะยุติการสนับสนุน Windows ใด",
+        options: ["Windows 7","Windows 8","Windows 9","Windows 10","Windows 11"],
+        correctIndex: 3,
+        rationale: "ในวันที่ 14 ตุลาคม 2025 (พ.ศ. 2568) Microsoft จะยุติการสนับสนุน Windows 10 ทุกรูปแบบอย่างสิ้นเชิง ซึ่งผู้ใช้งานควรรู้เพื่อป้องกันคอมพิวเตอร์จากการเป็นแหล่งรวมไวรัสและมัลแวร์ในอนาคต"
+      },
+      {
+        id: 70,
+        question: "Bitchat คืออะไร",
+        options: ["สกุลเงินดิจิทัลชนิดหนึ่ง","แอปพลิเคชันส่งข้อความโดยไม่จำเป็นต้องใช้อินเทอร์เน็ต","โปรแกรมสำหรับซื้อขายเหรียญคริปโต","ชุมชนออนไลน์สำหรับนักพัฒนาเทคโนโลยี Blockchain","เครื่องมือสำหรับคุยกับ AI"],
+        correctIndex: 1,
+        rationale: "Bitchat เป็นแอปพลิเคชันส่งข้อความที่สามารถใช้งานได้โดยไม่ต้องมีหมายเลขโทรศัพท์ อีเมล หรืออินเทอร์เน็ต เพราะรองรับการเชื่อมต่อผ่านบลูทูธในระบบเครือข่ายแบบเมช (Mesh network) ช่วยต้านทานการเซ็นเซอร์และการเฝ้าระวัง"
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    const totalQuestions = quizData.length;
+
+    const quizArea = document.getElementById('quiz-area');
+    const scoreContainer = document.getElementById('score-card');
+    const progressFill = document.getElementById('progress-fill');
+    const currentQSpan = document.getElementById('current-q');
+    const totalQSpan = document.getElementById('total-q');
+    const progressContainer = document.getElementById('progress-container');
+
+    function initQuiz(){
+      totalQSpan.textContent = totalQuestions;
+      renderQuestions();
+      showQuestion(0);
+      updateProgress();
+    }
+
+    function renderQuestions(){
+      quizArea.innerHTML = '';
+      quizData.forEach((q, index) => {
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        card.id = `q-${index}`;
+
+        let optionsHtml = '';
+        q.options.forEach((opt, optIndex) => {
+          optionsHtml += `<button class="option-btn" onclick="checkAnswer(${index}, ${optIndex}, this)">${opt}</button>`;
+        });
+
+        card.innerHTML = `
+          <div class="question-text">${index + 61}. ${q.question}</div>
+          <div class="options">${optionsHtml}</div>
+          <div class="feedback" id="feedback-${index}">
+            <h4>เฉลย / คำอธิบาย</h4>
+            <p>${q.rationale}</p>
+          </div>
+          <button class="btn-next" id="btn-next-${index}" onclick="nextQuestion()">
+            ${index === totalQuestions - 1 ? 'ดูคะแนนสอบ' : 'ข้อถัดไป'}
+          </button>
+        `;
+        quizArea.appendChild(card);
+      });
+    }
+
+    function showQuestion(index){
+      document.querySelectorAll('.question-card').forEach(card => card.classList.remove('active'));
+      document.getElementById(`q-${index}`).classList.add('active');
+      currentQSpan.textContent = index + 1;
+      currentQuestionIndex = index;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function checkAnswer(qIndex, optIndex, btn){
+      const q = quizData[qIndex];
+      const feedback = document.getElementById(`feedback-${qIndex}`);
+      const nextBtn = document.getElementById(`btn-next-${qIndex}`);
+      const allOpts = document.querySelectorAll(`#q-${qIndex} .option-btn`);
+
+      allOpts.forEach(b => b.disabled = true);
+
+      if(optIndex === q.correctIndex){
+        btn.classList.add('correct');
+        score++;
+      } else {
+        btn.classList.add('wrong');
+        allOpts[q.correctIndex].classList.add('correct');
+      }
+
+      feedback.style.display = 'block';
+      nextBtn.style.display = 'block';
+      nextBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function nextQuestion(){
+      if(currentQuestionIndex < totalQuestions - 1){
+        showQuestion(currentQuestionIndex + 1);
+        updateProgress();
+      } else {
+        showResult();
+      }
+    }
+
+    function updateProgress(){
+      const progress = (currentQuestionIndex / totalQuestions) * 100;
+      progressFill.style.width = `${progress}%`;
+    }
+
+    function showResult(){
+      quizArea.style.display = 'none';
+      progressContainer.style.display = 'none';
+      scoreContainer.style.display = 'block';
+
+      const finalScoreEl = document.getElementById('final-score');
+      const scoreMsg = document.getElementById('score-msg');
+      const scoreChart = document.getElementById('score-chart');
+
+      let current = 0;
+      const timer = setInterval(() => {
+        current++;
+        finalScoreEl.textContent = `${current}/${totalQuestions}`;
+        if(current >= score){
+          clearInterval(timer);
+          finalScoreEl.textContent = `${score}/${totalQuestions}`;
+        }
+      }, 45);
+
+      const percent = (score / totalQuestions) * 100;
+      scoreChart.style.background = `conic-gradient(var(--primary) ${percent}%, #e2e8f0 ${percent}%)`;
+
+      if(score >= 8) scoreMsg.textContent = "ยอดเยี่ยม! คุณติดตามข่าวสารและมีความรู้รอบตัวดีมาก";
+      else if(score >= 5) scoreMsg.textContent = "ทำได้ดี! ทบทวนอีกนิดเก่งแน่นอน";
+      else scoreMsg.textContent = "ไม่ต้องเสียใจ ลองทบทวนเนื้อหาข่าวสารแล้วลองใหม่นะ";
+    }
+
+    function restartQuiz(){
+      currentQuestionIndex = 0;
+      score = 0;
+
+      scoreContainer.style.display = 'none';
+      quizArea.style.display = 'block';
+      progressContainer.style.display = 'block';
+
+      document.querySelectorAll('.option-btn').forEach(btn => {
+        btn.disabled = false;
+        btn.classList.remove('correct','wrong');
+      });
+      document.querySelectorAll('.feedback').forEach(fb => fb.style.display = 'none');
+      document.querySelectorAll('.btn-next').forEach(btn => btn.style.display = 'none');
+
+      showQuestion(0);
+      updateProgress();
+    }
+
+    initQuiz();
+  </script>
+</body>
+</html>

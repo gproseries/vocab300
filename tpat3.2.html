@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>TPAT 3 Quiz: ข่าวสารและเทคโนโลยี</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --primary-color:#2563eb;
+      --success-color:#22c55e;
+      --danger-color:#ef4444;
+      --bg-color:#f3f4f6;
+      --card-bg:#ffffff;
+      --text-color:#1f2937;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      font-family:'Sarabun',sans-serif;
+      background-color:var(--bg-color);
+      color:var(--text-color);
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:
+        calc(14px + env(safe-area-inset-top))
+        calc(14px + env(safe-area-inset-right))
+        calc(14px + env(safe-area-inset-bottom))
+        calc(14px + env(safe-area-inset-left));
+      -webkit-text-size-adjust:100%;
+      overscroll-behavior: none;
+    }
+
+    .btn-back{
+      position: fixed;
+      top: calc(12px + env(safe-area-inset-top));
+      left: calc(12px + env(safe-area-inset-left));
+      z-index: 999;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-family:'Sarabun',sans-serif;
+      font-weight:700;
+      font-size: 16px;
+      cursor:pointer;
+      background: #111827;
+      color: #fff;
+      box-shadow: 0 10px 18px rgba(0,0,0,.18);
+      transition: transform .08s ease, opacity .15s ease;
+      touch-action: manipulation;
+    }
+    .btn-back:active{ transform: scale(.96); opacity:.9; }
+
+    .container{
+      width:min(92vw, 620px);
+      background-color:var(--card-bg);
+      border-radius:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,.12);
+      padding: 1.6rem 1.35rem;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .header{
+      text-align:center;
+      margin-bottom:1.4rem;
+    }
+    .header h1{
+      font-size:1.5rem;
+      color:var(--primary-color);
+      margin:0 0 .35rem 0;
+      font-weight:800;
+    }
+    .header p{
+      color:#6b7280;
+      font-size:.95rem;
+      margin:0;
+      line-height:1.4;
+    }
+
+    .progress-bar{
+      width:100%;
+      height:6px;
+      background-color:#e5e7eb;
+      border-radius:3px;
+      margin-bottom:1.4rem;
+      overflow:hidden;
+    }
+    .progress-fill{
+      height:100%;
+      background-color:var(--primary-color);
+      width:0%;
+      transition: width .25s ease;
+    }
+
+    .question-text{
+      font-size:1.15rem;
+      font-weight:700;
+      margin-bottom:1.1rem;
+      line-height:1.55;
+    }
+
+    .options-grid{
+      display:grid;
+      gap:.85rem;
+    }
+
+    .option-btn{
+      background-color:#f9fafb;
+      border:2px solid #e5e7eb;
+      border-radius:10px;
+      padding: 1rem;
+      text-align:left;
+      font-family:'Sarabun',sans-serif;
+      font-size:1rem;
+      cursor:pointer;
+      transition: transform .05s ease, background-color .15s, border-color .15s;
+      color:var(--text-color);
+      touch-action: manipulation;
+    }
+    .option-btn:hover:not(:disabled){
+      border-color:var(--primary-color);
+      background-color:#eff6ff;
+    }
+    .option-btn:active:not(:disabled){ transform: scale(.99); }
+    .option-btn:disabled{ cursor:default; opacity: .98; }
+
+    .option-btn.correct{
+      background-color:#dcfce7;
+      border-color:var(--success-color);
+      color:#166534;
+    }
+    .option-btn.wrong{
+      background-color:#fee2e2;
+      border-color:var(--danger-color);
+      color:#991b1b;
+    }
+
+    .feedback{
+      margin-top:1.1rem;
+      padding:1rem;
+      background-color:#f8fafc;
+      border-radius:10px;
+      border-left:4px solid var(--primary-color);
+      display:none;
+      animation: fadeIn .25s ease;
+    }
+    .feedback h3{
+      margin:0 0 .4rem 0;
+      font-size:1rem;
+      color:var(--primary-color);
+      font-weight:800;
+    }
+    .feedback p{
+      margin:0;
+      font-size:.98rem;
+      line-height:1.55;
+      color:#374151;
+    }
+    .citation{
+      font-size:.78rem;
+      color:#9ca3af;
+      margin-top:.55rem;
+      display:block;
+      text-align:right;
+    }
+
+    .btn-next{
+      background-color:var(--primary-color);
+      color:#fff;
+      border:none;
+      border-radius:10px;
+      padding:.85rem 1.25rem;
+      font-family:'Sarabun',sans-serif;
+      font-size:1rem;
+      font-weight:800;
+      cursor:pointer;
+      margin-top:1rem;
+      display:none;
+      transition: opacity .15s ease, transform .06s ease;
+      float:right;
+      touch-action: manipulation;
+    }
+    .btn-next:active{ transform: scale(.98); }
+
+    .score-card{
+      text-align:center;
+      display:none;
+      animation: fadeIn .35s ease;
+    }
+    .score-circle{
+      width:120px;
+      height:120px;
+      background-color:var(--primary-color);
+      border-radius:50%;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      margin: 0 auto 1.6rem auto;
+      color:#fff;
+      font-size:2.2rem;
+      font-weight:900;
+      box-shadow:0 10px 18px rgba(37,99,235,.25);
+    }
+    .restart-btn{
+      background-color:#111827;
+      color:#fff;
+      border:none;
+      border-radius:10px;
+      padding:1rem 1.6rem;
+      font-family:'Sarabun',sans-serif;
+      font-size:1rem;
+      font-weight:800;
+      cursor:pointer;
+      transition: transform .06s ease, opacity .15s ease;
+      touch-action: manipulation;
+    }
+    .restart-btn:active{ transform: scale(.98); opacity:.92; }
+
+    @keyframes fadeIn{
+      from{ opacity:0; transform: translateY(8px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<button class="btn-back" onclick="goBack()">← กลับ</button>
+
+<div class="container">
+  <div class="header" id="quiz-header">
+    <h1>TPAT 3 News & Tech</h1>
+    <p>พาร์ทข่าวสาร ความรู้รอบตัว และเทคโนโลยีสมัยใหม่</p>
+  </div>
+
+  <div class="progress-bar" id="progress-container">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+
+  <div id="quiz-area">
+    <div class="question-container">
+      <div class="question-text" id="question-text">Loading...</div>
+      <div class="options-grid" id="options-container"></div>
+    </div>
+
+    <div class="feedback" id="feedback-area">
+      <h3>คำอธิบาย</h3>
+      <p id="feedback-text"></p>
+      <span class="citation" id="citation-text"></span>
+    </div>
+
+    <button class="btn-next" id="next-btn">ข้อถัดไป ➜</button>
+  </div>
+
+  <div class="score-card" id="score-area">
+    <h2 style="margin:0 0 .5rem 0;">จบการทดสอบ!</h2>
+    <p style="margin:.15rem 0 1rem 0; color:#6b7280;">คะแนนของคุณคือ</p>
+    <div class="score-circle" id="final-score">0/0</div>
+    <p id="score-message" style="margin:0 0 1.4rem 0; font-weight:800;">ยอดเยี่ยมมาก!</p>
+    <button class="restart-btn" onclick="restartQuiz()">ทำแบบทดสอบอีกครั้ง</button>
+  </div>
+</div>
+
+<script>
+  function goBack(){
+    window.location.href = "index.html";
+  }
+
+  const quizData = [
+    {
+      id: 49,
+      source: "ข้อ 49",
+      question: "ข้อใดกล่าวถึง 'ข้อเสีย' ของอุปกรณ์ IoT (Internet of Things) ได้ **ไม่ถูกต้อง**?",
+      options: [
+        "มีราคาแพงกว่าอุปกรณ์ทั่วไป",
+        "ต้องมีการเรียนรู้วิธีการใช้งาน",
+        "หากไม่มีอินเทอร์เน็ต จะทำงานได้ไม่ต่างจากอุปกรณ์ทั่วไป",
+        "กินไฟมากกว่าปกติเพราะต้องสแตนด์บาย"
+      ],
+      correct: 2,
+      explanation: "อุปกรณ์ IoT หลายชนิดยังทำงานพื้นฐานได้แม้ไม่มีเน็ต (เช่น เปิด-ปิดแบบปกติ) จึงไม่ใช่ 'ข้อเสีย' โดยตรง ข้อเสียที่เจอบ่อยคือราคา/ความซับซ้อน/การใช้ไฟตอนสแตนด์บาย"
+    },
+    {
+      id: 55,
+      source: "ข้อ 55",
+      question: "ข้อใดจัดเป็นรถยนต์ไฟฟ้า (EV) แท้ ตามนิยามอุตสาหกรรมยานยนต์?",
+      options: [
+        "รถยนต์ที่มีทั้งเครื่องยนต์และมอเตอร์ไฟฟ้า",
+        "รถยนต์ที่ขับเคลื่อนด้วยมอเตอร์ไฟฟ้าเพียงอย่างเดียว",
+        "รถยนต์ที่ใช้เครื่องยนต์ปั่นไฟเข้ามอเตอร์",
+        "รถยนต์ที่ใช้น้ำมันผสมแก๊สธรรมชาติ"
+      ],
+      correct: 1,
+      explanation: "EV (Battery Electric Vehicle) ต้องขับเคลื่อนด้วยมอเตอร์ไฟฟ้าอย่างเดียว ส่วนที่มีเครื่องยนต์ร่วม (ขับหรือปั่นไฟ) มักถูกจัดเป็น Hybrid/Range-extended ตามนิยามการตลาด/อุตสาหกรรม"
+    },
+    {
+      id: 62,
+      source: "ข้อ 62",
+      question: "สัญลักษณ์รูป 'หัวใจที่มีสายฟ้าผ่า' หมายถึงสิ่งใด?",
+      options: [
+        "พื้นที่อันตรายไฟฟ้าแรงสูง",
+        "จุดชาร์จอุปกรณ์การแพทย์",
+        "เครื่องกระตุกหัวใจด้วยไฟฟ้าอัตโนมัติ (AED)",
+        "แผนกโรคหัวใจ"
+      ],
+      correct: 2,
+      explanation: "สัญลักษณ์หัวใจกับสายฟ้า ใช้บอกจุดติดตั้ง AED สำหรับช่วยชีวิตผู้ป่วยหัวใจหยุดเต้นฉุกเฉิน"
+    },
+    {
+      id: 64,
+      source: "ข้อ 64",
+      question: "อัลเบิร์ต ไอน์สไตน์ ได้รับรางวัลโนเบลจากผลงานเรื่องใด?",
+      options: [
+        "ปรากฏการณ์โฟโตอิเล็กทริก (Photoelectric Effect)",
+        "ทฤษฎีสัมพัทธภาพพิเศษ",
+        "สมการ E=mc²",
+        "การค้นพบนิวตรอน"
+      ],
+      correct: 0,
+      explanation: "โนเบลปี 1921 ให้จากการอธิบาย Photoelectric Effect (ปูทางควอนตัม) ไม่ใช่สัมพัทธภาพ"
+    },
+    {
+      id: 66,
+      source: "ข้อ 66",
+      question: "ข้อใดคือข้อดีด้านสิ่งแวดล้อมของโรงไฟฟ้าพลังงานนิวเคลียร์?",
+      options: [
+        "ไม่มีกากกัมมันตรังสี",
+        "ใช้น้ำน้อยมากในการผลิต",
+        "ก่อสร้างได้รวดเร็วที่สุด",
+        "ไม่มีการปล่อยคาร์บอนไดออกไซด์จากการผลิต"
+      ],
+      correct: 3,
+      explanation: "ขณะเดินเครื่องผลิตไฟฟ้า นิวเคลียร์ไม่เผาไหม้เชื้อเพลิงฟอสซิล จึงแทบไม่ปล่อย CO₂ ในกระบวนการผลิตไฟฟ้า (แต่ยังมีประเด็นกากกัมมันตรังสี)"
+    },
+    {
+      id: 69,
+      source: "ข้อ 69",
+      question: "หลักการของเครื่องบินล่องหน (Stealth) คือข้อใด?",
+      options: [
+        "หักเหแสงทำให้มองไม่เห็นด้วยตาเปล่า",
+        "ลดเสียงเครื่องยนต์จนเงียบสนิท",
+        "ไม่สะท้อนคลื่นเรดาร์ ทำให้ตรวจจับไม่พบบนจอ",
+        "บินด้วยความเร็วสูงจนเรดาร์จับไม่ทัน"
+      ],
+      correct: 2,
+      explanation: "Stealth ออกแบบรูปทรง/วัสดุให้ลดการสะท้อนเรดาร์กลับไปยังสถานี ทำให้เรดาร์ตรวจจับยากขึ้น ไม่ได้หายตัวจากตาเปล่า"
+    },
+    {
+      id: 70,
+      source: "ข้อ 70",
+      question: "ข้อใดเป็นจริงเมื่อเปรียบเทียบแบตเตอรี่โซเดียม (เกลือ) กับลิเทียม?",
+      options: [
+        "แบตเตอรี่โซเดียมเบากว่าลิเทียมมาก",
+        "ที่ความจุเท่ากัน แบตเตอรี่โซเดียมจะมีน้ำหนักมากกว่า",
+        "แบตเตอรี่โซเดียมใช้ในอวกาศไม่ได้",
+        "แบตเตอรี่ลิเทียมราคาถูกกว่าโซเดียม"
+      ],
+      correct: 1,
+      explanation: "โดยทั่วไป โซเดียมมีความหนาแน่นพลังงานต่ำกว่าลิเทียม ทำให้ที่ความจุใกล้กันมักหนัก/ใหญ่กว่า (ข้อดีคือวัตถุดิบหาได้ง่าย)"
+    },
+    {
+      id: 52,
+      source: "ข้อ 52",
+      question: "วงโคจรดาวเทียมแบบ 'ค้างฟ้า' (Geostationary) มีลักษณะอย่างไร?",
+      options: [
+        "โคจรเร็วกว่าการหมุนของโลก",
+        "โคจรผ่านขั้วโลกเหนือและใต้",
+        "มีคาบการโคจรเท่ากับคาบการหมุนรอบตัวเองของโลก",
+        "เป็นวงโคจรระดับต่ำ (LEO)"
+      ],
+      correct: 2,
+      explanation: "Geostationary มีคาบเท่ากับโลกหมุนรอบตัวเอง ทำให้ดูเหมือนอยู่ที่เดิมบนท้องฟ้าเมื่อมองจากพื้นโลก (ต้องอยู่เหนือเส้นศูนย์สูตรด้วย)"
+    },
+    {
+      id: 67,
+      source: "ข้อ 67",
+      question: "หน่วยในข้อใด **ไม่ใช่** ปริมาณทางฟิสิกส์ แต่ขึ้นกับเศรษฐศาสตร์?",
+      options: [
+        "Mbps (เมกะบิตต่อวินาที)",
+        "kWh (กิโลวัตต์-ชั่วโมง)",
+        "Baht/kg (บาทต่อกิโลกรัม)",
+        "Hz (เฮิรตซ์)"
+      ],
+      correct: 2,
+      explanation: "Baht/kg เป็นหน่วยราคา (เศรษฐศาสตร์/ตลาด) ไม่ใช่ปริมาณฟิสิกส์"
+    },
+    {
+      id: 68,
+      source: "ข้อ 68",
+      question: "เครื่องมือช่างชนิดเลื่อยจิ๊กซอว์ไฟฟ้า เหมาะกับงานลักษณะใด?",
+      options: [
+        "เจาะรูคอนกรีต",
+        "ตัดวัสดุแผ่นเป็นแนวโค้งหรือลวดลาย",
+        "ไสไม้ให้เรียบ",
+        "ขันน็อตสกรู"
+      ],
+      correct: 1,
+      explanation: "จิ๊กซอว์เด่นเรื่องตัดโค้ง/ลวดลายบนวัสดุแผ่น (ไม้/พลาสติก/โลหะบางตามใบเลื่อย)"
+    }
+  ];
+
+  let currentQuestionIndex = 0;
+  let score = 0;
+
+  const questionText = document.getElementById('question-text');
+  const optionsContainer = document.getElementById('options-container');
+  const feedbackArea = document.getElementById('feedback-area');
+  const feedbackText = document.getElementById('feedback-text');
+  const citationText = document.getElementById('citation-text');
+  const nextBtn = document.getElementById('next-btn');
+  const progressFill = document.getElementById('progress-fill');
+  const quizArea = document.getElementById('quiz-area');
+  const scoreArea = document.getElementById('score-area');
+  const finalScore = document.getElementById('final-score');
+  const scoreMessage = document.getElementById('score-message');
+  const quizHeader = document.getElementById('quiz-header');
+  const progressContainer = document.getElementById('progress-container');
+
+  function loadQuestion(){
+    const currentData = quizData[currentQuestionIndex];
+
+    const progress = (currentQuestionIndex / quizData.length) * 100;
+    progressFill.style.width = `${progress}%`;
+
+    questionText.textContent = `${currentQuestionIndex + 1}. ${currentData.question}`;
+    optionsContainer.innerHTML = '';
+    feedbackArea.style.display = 'none';
+    nextBtn.style.display = 'none';
+
+    currentData.options.forEach((opt, index) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.textContent = opt;
+      btn.onclick = () => checkAnswer(index);
+      optionsContainer.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(selectedIndex){
+    const currentData = quizData[currentQuestionIndex];
+    const buttons = optionsContainer.getElementsByClassName('option-btn');
+
+    for(const btn of buttons) btn.disabled = true;
+
+    if(selectedIndex === currentData.correct){
+      buttons[selectedIndex].classList.add('correct');
+      score++;
+    }else{
+      buttons[selectedIndex].classList.add('wrong');
+      buttons[currentData.correct].classList.add('correct');
+    }
+
+    feedbackText.textContent = currentData.explanation;
+    citationText.textContent = `แหล่งที่มา: TPAT 3 Set 1 • ${currentData.source}`;
+    feedbackArea.style.display = 'block';
+
+    if(currentQuestionIndex < quizData.length - 1){
+      nextBtn.textContent = "ข้อถัดไป ➜";
+      nextBtn.onclick = nextQuestion;
+    }else{
+      nextBtn.textContent = "ดูผลคะแนน";
+      nextBtn.onclick = showScore;
+    }
+    nextBtn.style.display = 'block';
+  }
+
+  function nextQuestion(){
+    currentQuestionIndex++;
+    loadQuestion();
+  }
+
+  function showScore(){
+    quizArea.style.display = 'none';
+    quizHeader.style.display = 'none';
+    progressContainer.style.display = 'none';
+    scoreArea.style.display = 'block';
+
+    finalScore.textContent = `${score}/${quizData.length}`;
+
+    const percentage = (score / quizData.length) * 100;
+    if(percentage >= 80){
+      scoreMessage.textContent = "สุดยอด! ข่าว+เทคแน่นแบบคนอ่านทุกวัน 😈";
+      scoreMessage.style.color = "#166534";
+    }else if(percentage >= 50){
+      scoreMessage.textContent = "ดีเลย! อีกนิดคือโหมดเทพแล้ว";
+      scoreMessage.style.color = "#854d0e";
+    }else{
+      scoreMessage.textContent = "ยังได้อยู่ ลองวนอีกรอบ เดี๋ยวจำติดหัวเอง";
+      scoreMessage.style.color = "#991b1b";
+    }
+  }
+
+  function restartQuiz(){
+    currentQuestionIndex = 0;
+    score = 0;
+    scoreArea.style.display = 'none';
+    quizArea.style.display = 'block';
+    quizHeader.style.display = 'block';
+    progressContainer.style.display = 'block';
+    loadQuestion();
+  }
+
+  loadQuestion();
+</script>
+
+</body>
+</html>

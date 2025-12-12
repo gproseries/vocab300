@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>TPAT3 ข่าวรายเดือน 2024–2025</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --primary:#2563eb;
+      --primary-dark:#1e40af;
+      --success:#22c55e;
+      --danger:#ef4444;
+      --bg:#020617;
+      --card:#0f172a;
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+      --border:rgba(148,163,184,.18);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:'Sarabun',system-ui,-apple-system;
+      background:
+        radial-gradient(900px 500px at 20% 10%, rgba(37,99,235,.18), transparent 60%),
+        radial-gradient(700px 400px at 80% 20%, rgba(14,165,233,.12), transparent 55%),
+        var(--bg);
+      color:var(--text);
+      padding:
+        calc(16px + env(safe-area-inset-top))
+        calc(16px + env(safe-area-inset-right))
+        calc(16px + env(safe-area-inset-bottom))
+        calc(16px + env(safe-area-inset-left));
+      -webkit-text-size-adjust:100%;
+    }
+
+    .btn-back{
+      position:fixed;
+      top:calc(12px + env(safe-area-inset-top));
+      left:calc(12px + env(safe-area-inset-left));
+      z-index:1000;
+      border:none;
+      border-radius:999px;
+      padding:10px 14px;
+      background:#020617;
+      color:#fff;
+      font-weight:900;
+      cursor:pointer;
+      box-shadow:0 10px 20px rgba(0,0,0,.45);
+    }
+    .btn-back:active{transform:scale(.96)}
+
+    .wrap{max-width:980px;margin:0 auto}
+    .shell{
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      border-radius:20px;
+      overflow:hidden;
+      box-shadow:0 20px 60px rgba(0,0,0,.55);
+    }
+
+    header{
+      padding:20px 22px;
+      background:linear-gradient(120deg, rgba(37,99,235,.55), rgba(30,64,175,.35));
+      border-bottom:1px solid var(--border);
+    }
+    h1{margin:0;font-size:20px;font-weight:900}
+    .sub{margin-top:6px;color:rgba(229,231,235,.85);font-size:13px}
+
+    .bar{height:6px;background:rgba(148,163,184,.18)}
+    .bar>div{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg, var(--primary), #38bdf8);
+      transition:width .25s ease;
+    }
+
+    .topline{
+      padding:14px 18px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid var(--border);
+      background:rgba(15,23,42,.65);
+    }
+
+    select,button{
+      font-family:'Sarabun';
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#020617;
+      color:var(--text);
+      padding:10px 12px;
+      font-weight:800;
+    }
+    button{
+      background:linear-gradient(180deg, var(--primary), var(--primary-dark));
+      border-color:rgba(37,99,235,.6);
+      cursor:pointer;
+    }
+    button:disabled{opacity:.55}
+
+    .stats{
+      display:flex;
+      gap:10px;
+      font-size:13px;
+      color:rgba(229,231,235,.9);
+      flex-wrap:wrap;
+    }
+
+    .main{padding:20px 18px}
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(2,6,23,.65);
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.2px;
+    }
+    .badge.hot{border-color:rgba(239,68,68,.45)}
+    .badge.niche{border-color:rgba(148,163,184,.25)}
+
+    .qtext{font-size:18px;font-weight:900;margin:12px 0 14px}
+    .opt{
+      width:100%;
+      padding:14px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:#020617;
+      color:var(--text);
+      font-size:16px;
+      text-align:left;
+      cursor:pointer;
+    }
+    .opt:active{transform:scale(.99)}
+    .opt.correct{background:rgba(34,197,94,.18);border-color:rgba(34,197,94,.6)}
+    .opt.wrong{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.6)}
+
+    .feedback{
+      margin-top:14px;
+      padding:14px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(15,23,42,.75);
+      display:none;
+      line-height:1.55;
+    }
+    .feedback a{color:#93c5fd}
+
+    .actions{
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      margin-top:12px;
+      flex-wrap:wrap;
+    }
+
+    .result{
+      display:none;
+      padding:26px 18px;
+      text-align:center;
+    }
+    .score{
+      font-size:56px;
+      font-weight:900;
+      color:#93c5fd;
+      margin:4px 0 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<button class="btn-back" onclick="location.href='index.html'">← กลับ</button>
+
+<div class="wrap">
+  <div class="shell">
+    <header>
+      <h1>TPAT3 ข่าวรายเดือน 2024–2025</h1>
+      <div class="sub">เดือนละ 2 ข้อ • แนวสอบจริง • iPad / iPhone ลื่น</div>
+    </header>
+
+    <div class="bar"><div id="progress"></div></div>
+
+    <div id="app">
+      <div class="topline">
+        <div class="row">
+          <select id="yearSel"></select>
+          <select id="monthSel"></select>
+          <select id="modeSel">
+            <option value="timeline">เรียงตามเวลา</option>
+            <option value="random">สุ่ม</option>
+          </select>
+          <button id="btnStart">เริ่ม / รีสตาร์ต</button>
+          <button id="btnReset" class="ghost">ล้างค่า</button>
+        </div>
+
+        <div class="stats">
+          <span id="statSeen">ข้อ: 0</span>
+          <span id="statCorrect">ถูก: 0</span>
+          <span id="statWrong">ผิด: 0</span>
+          <span id="statScore">คะแนน: 0</span>
+        </div>
+      </div>
+
+      <div class="main" id="quiz">
+        <div class="row">
+          <span class="badge" id="badgeWhen">—</span>
+          <span class="badge niche" id="badgeType">—</span>
+        </div>
+
+        <div class="qtext" id="qtext">กด “เริ่ม / รีสตาร์ต” เพื่อเริ่ม</div>
+        <div id="opts"></div>
+
+        <div class="feedback" id="fb"></div>
+
+        <div class="actions">
+          <button id="btnNext" disabled>ข้อถัดไป</button>
+        </div>
+      </div>
+
+      <div class="result" id="result">
+        <div class="score" id="finalScore">0 / 0</div>
+        <div id="finalMsg"></div>
+        <div class="actions" style="justify-content:center;margin-top:14px">
+          <button id="btnAgain">ทำใหม่</button>
+          <button onclick="location.href='index.html'">กลับหน้าหลัก</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+const TH_MONTHS = [
+  "", "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.",
+  "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."
+];
+
+const STORAGE_KEY = "tpat3_monthly_news_quiz_v1";
+
+const state = {
+  pool: [],
+  idx: 0,
+  locked: false,
+  score: 0,
+  seen: 0,
+  correct: 0,
+  wrong: 0,
+  current: null
+};
+
+const QUESTIONS = [
+  // =========================
+  // 2024 (Jan–Nov) เดือนละ 2
+  // =========================
+
+  // ---- Jan 2024
+  {
+    id:"2024-01-hot-1", y:2024, m:1, type:"ข่าวดัง",
+    q:"ญี่ปุ่นสร้างประวัติศาสตร์เดือนมกราคม 2024 จากภารกิจ SLIM: ญี่ปุ่นกลายเป็นชาติที่เท่าไรที่ลงจอดบนดวงจันทร์แบบนิ่ม (soft landing) ได้สำเร็จ?",
+    opts:["ชาติที่ 3","ชาติที่ 4","ชาติที่ 5","ชาติที่ 6","ชาติที่ 7"],
+    ans:2,
+    expl:"SLIM ทำให้ญี่ปุ่นเป็น “ชาติที่ 5” ที่ลงจอดบนดวงจันทร์แบบนิ่มได้สำเร็จ.",
+    src:"https://en.wikipedia.org/wiki/SLIM_(spacecraft)"
+  },
+  {
+    id:"2024-01-niche-1", y:2024, m:1, type:"ข่าวไม่ดัง",
+    q:"งานวิจัยเดือนมกราคม 2024 ที่เป็นข่าวสายเนิร์ดมาก: นักวิจัยสร้าง “เซมิคอนดักเตอร์ที่ใช้งานได้” จากวัสดุคาร์บอนชนิดใด?",
+    opts:["กราไฟต์ (Graphite)","กราฟีน (Graphene)","เพชร (Diamond)","ฟูลเลอรีน (Fullerene)","คาร์บอนแบล็ก (Carbon black)"],
+    ans:1,
+    expl:"รายงานข่าววิทย์ช่วงต้นปี 2024 พูดถึง “functional semiconductor made from graphene”.",
+    src:"https://en.wikipedia.org/wiki/2024_in_science"
+  },
+
+  // ---- Feb 2024
+  {
+    id:"2024-02-hot-1", y:2024, m:2, type:"ข่าวดัง",
+    q:"เดือนกุมภาพันธ์ 2024 ภารกิจ IM-1 “Odysseus” ถูกพูดถึงหนักมาก: ยานนี้เป็นของบริษัทใด?",
+    opts:["SpaceX","Blue Origin","Intuitive Machines","Rocket Lab","Axiom Space"],
+    ans:2,
+    expl:"Odysseus เป็นยานลงจอดของบริษัท Intuitive Machines ในภารกิจ IM-1.",
+    src:"https://en.wikipedia.org/wiki/Odysseus_(spacecraft)"
+  },
+  {
+    id:"2024-02-niche-1", y:2024, m:2, type:"ข่าวไม่ดัง",
+    q:"ภารกิจ IM-1 “Odysseus” เชื่อมกับโครงการของ NASA ที่ให้เอกชนส่งของไปดวงจันทร์ชื่ออะไร?",
+    opts:["CLPS (Commercial Lunar Payload Services)","COTS","Artemis III","SLS","New Horizons"],
+    ans:0,
+    expl:"IM-1 เป็นหนึ่งในภารกิจภายใต้ CLPS ของ NASA.",
+    src:"https://en.wikipedia.org/wiki/Commercial_Lunar_Payload_Services"
+  },
+
+  // ---- Mar 2024
+  {
+    id:"2024-03-hot-1", y:2024, m:3, type:"ข่าวดัง",
+    q:"เดือนมีนาคม 2024 รัฐสภายุโรปโหวตรับรองกฎหมายสำคัญด้าน AI: กฎหมายนี้เรียกกันว่าอะไร?",
+    opts:["EU Data Act","EU AI Act","GDPR 2.0","Digital Services Act","DMA"],
+    ans:1,
+    expl:"เดือนมีนาคม 2024 รัฐสภายุโรปโหวตรับรอง EU AI Act.",
+    src:"https://www.bytebacklaw.com/2024/03/eu-parliament-approves-eu-ai-act/"
+  },
+  {
+    id:"2024-03-niche-1", y:2024, m:3, type:"ข่าวไม่ดัง",
+    q:"ข่าวสายการแพทย์ช่วงมีนาคม 2024: มีรายงานการปลูกถ่ายอวัยวะจาก “หมู” สู่มนุษย์เป็นครั้งสำคัญ อวัยวะนั้นคืออะไร?",
+    opts:["หัวใจ","ตับ","ไต","ปอด","ตับอ่อน"],
+    ans:2,
+    expl:"ช่วงมีนาคม 2024 มีข่าวการปลูกถ่าย “ไตหมู” สู่มนุษย์ (xenotransplant) ที่เป็นหมุดหมายสำคัญ.",
+    src:"https://en.wikipedia.org/wiki/2024_in_science"
+  },
+
+  // ---- Apr 2024
+  {
+    id:"2024-04-hot-1", y:2024, m:4, type:"ข่าวดัง",
+    q:"สุริยุปราคาเต็มดวง 8 เม.ย. 2024 เส้นทาง totality วิ่งผ่านประเทศ/พื้นที่หลักตามลำดับใด?",
+    opts:[
+      "แคนาดา → สหรัฐฯ → เม็กซิโก",
+      "เม็กซิโก → สหรัฐฯ → แคนาดา",
+      "สหรัฐฯ → เม็กซิโก → แคนาดา",
+      "เม็กซิโก → แคนาดา → สหรัฐฯ",
+      "เฉพาะสหรัฐฯ เท่านั้น"
+    ],
+    ans:1,
+    expl:"เส้นทาง totality ผ่าน เม็กซิโก → สหรัฐฯ → แคนาดา.",
+    src:"https://www.timeanddate.com/eclipse/solar/2024-april-8"
+  },
+  {
+    id:"2024-04-niche-1", y:2024, m:4, type:"ข่าวไม่ดัง",
+    q:"เดือนเมษายน 2024 จรวดรุ่น “Delta IV Heavy” ถูกพูดถึงในฐานะตำนานยุคหนึ่ง: จุดเด่นของรุ่น Heavy คืออะไร?",
+    opts:[
+      "ใช้เชื้อเพลิงแข็งทั้งหมด",
+      "มีบูสเตอร์แกนกลาง 3 แกน (triple-core)",
+      "ลงจอดกลับมาใช้ซ้ำได้",
+      "เป็นจรวดนิวเคลียร์",
+      "ยิงด้วยรางแม่เหล็ก"
+    ],
+    ans:1,
+    expl:"Delta IV Heavy คือแนว triple-core ใช้แกนกลาง 3 แกนในการเพิ่มแรงขับ.",
+    src:"https://en.wikipedia.org/wiki/Delta_IV_Heavy"
+  },
+
+  // ---- May 2024
+  {
+    id:"2024-05-hot-1", y:2024, m:5, type:"ข่าวดัง",
+    q:"OpenAI เปิดตัว GPT-4o เดือนพฤษภาคม 2024: ตัว “o” ย่อจากคำว่าอะไร?",
+    opts:["orbit","omni","open","optimal","omega"],
+    ans:1,
+    expl:"GPT-4o = “omni” (แนวคิดมัลติโหมด: ข้อความ/เสียง/ภาพ ฯลฯ).",
+    src:"https://openai.com/index/hello-gpt-4o/"
+  },
+  {
+    id:"2024-05-niche-1", y:2024, m:5, type:"ข่าวไม่ดัง",
+    q:"ภารกิจ Chang’e-6 ของจีน (พูดถึงหนักช่วง พ.ค. 2024) มีเป้าหมายเด่นข้อใด?",
+    opts:[
+      "ส่งมนุษย์ไปดวงจันทร์",
+      "เก็บตัวอย่างจาก “ด้านไกล” ของดวงจันทร์กลับโลก",
+      "สร้างฐานถาวรบนดวงจันทร์",
+      "ทดสอบเครื่องยนต์นิวเคลียร์",
+      "สำรวจดาวอังคาร"
+    ],
+    ans:1,
+    expl:"Chang’e-6 โดดเด่นเพราะเป็นภารกิจเก็บตัวอย่างจาก “ด้านไกล (far side)” แล้วส่งกลับโลก.",
+    src:"https://en.wikipedia.org/wiki/Chang%27e_6"
+  },
+
+  // ---- Jun 2024
+  {
+    id:"2024-06-hot-1", y:2024, m:6, type:"ข่าวดัง",
+    q:"เดือนมิถุนายน 2024 Chang’e-6 ทำสำเร็จตามเป้าหมายใหญ่: สิ่งที่ส่งกลับมายังโลกคืออะไร?",
+    opts:[
+      "แผงโซลาร์เซลล์ต้นแบบ",
+      "ตัวอย่างหิน/ดินจากดวงจันทร์",
+      "ชิ้นส่วนยานอวกาศของคู่แข่ง",
+      "น้ำแข็งบริสุทธิ์ก้อนใหญ่",
+      "อุกกาบาตจากดาวอังคาร"
+    ],
+    ans:1,
+    expl:"Chang’e-6 ส่ง “ตัวอย่างจากดวงจันทร์” กลับโลก (จุดขายคือจากด้านไกล).",
+    src:"https://en.wikipedia.org/wiki/Chang%27e_6"
+  },
+  {
+    id:"2024-06-niche-1", y:2024, m:6, type:"ข่าวไม่ดัง",
+    q:"เดือนมิถุนายน 2024 Boeing ทำภารกิจสำคัญกับยานที่ตั้งใจเป็นแท็กซี่ไป-กลับ ISS: ยานนั้นชื่ออะไร?",
+    opts:["Dream Chaser","Starliner (CST-100)","Orion","Cygnus","Dragon XL"],
+    ans:1,
+    expl:"Boeing CST-100 “Starliner” คือแคปซูลลูกเรือไป-กลับ ISS.",
+    src:"https://en.wikipedia.org/wiki/Boeing_Starliner"
+  },
+
+  // ---- Jul 2024
+  {
+    id:"2024-07-hot-1", y:2024, m:7, type:"ข่าวดัง",
+    q:"เหตุการณ์อัปเดต CrowdStrike ทำให้ระบบทั่วโลกสะดุดเดือนกรกฎาคม 2024: อาการที่คนเจอบ่อยสุดบน Windows คืออะไร?",
+    opts:["เครื่องดับไฟทั้งตึก","จอฟ้า (Blue Screen)","จอเป็นสีเขียวทั้งจอ","Wi-Fi หายอย่างเดียว","พัดลมหมุนแต่ภาพไม่ขึ้นตลอดไป"],
+    ans:1,
+    expl:"บั๊กจากอัปเดตทำให้ Windows จำนวนมากเจอ “จอฟ้า (BSOD)”.",
+    src:"https://en.wikipedia.org/wiki/2024_CrowdStrike_incident"
+  },
+  {
+    id:"2024-07-niche-1", y:2024, m:7, type:"ข่าวไม่ดัง",
+    q:"“Dark Oxygen” ที่รายงานกลางปี 2024 อธิบายว่าออกซิเจนเกิดได้แม้ไม่มีแสง เพราะอะไร?",
+    opts:[
+      "แพลงก์ตอนเรืองแสงสังเคราะห์แสงได้",
+      "ก้อนแร่โลหะใต้ทะเลทำตัวเหมือนแบตเตอรี่ แยกน้ำให้เป็นออกซิเจน",
+      "ภูเขาไฟใต้ทะเลพ่น O₂ ตรงๆ",
+      "ซากวาฬปล่อย O₂ ตอนย่อยสลาย",
+      "ปฏิกิริยานิวเคลียร์ใต้พื้นโลก"
+    ],
+    ans:1,
+    expl:"แนวคิดคือ polymetallic nodules ทำตัวเหมือน “แบตเตอรี่ธรรมชาติ” จนเกิดการแยกน้ำให้เป็น O₂ ได้.",
+    src:"https://en.wikipedia.org/wiki/2024_in_science"
+  },
+
+  // ---- Aug 2024
+  {
+    id:"2024-08-hot-1", y:2024, m:8, type:"ข่าวดัง",
+    q:"NASA ประกาศเดือนสิงหาคม 2024 ให้ยาน Starliner กลับโลก “แบบไร้ลูกเรือ” เพราะเหตุผลหลักแนวไหน?",
+    opts:[
+      "เชื้อเพลิงไม่พอ",
+      "ระบบนำร่องหายไป",
+      "ประเมินความเสี่ยงจากปัญหาเทคนิค (เช่น thruster/helium) แล้วไม่รับความเสี่ยงเพิ่มกับลูกเรือ",
+      "ถูกยกเลิกเพราะการเมือง",
+      "โดนพายุสุริยะทำลาย"
+    ],
+    ans:2,
+    expl:"NASA ระบุชัดว่าเลือกให้ Starliner กลับแบบไร้ลูกเรือเพื่อไม่เพิ่มความเสี่ยงต่อทีมลูกเรือ.",
+    src:"https://www.nasa.gov/news-release/nasa-decides-to-bring-starliner-spacecraft-back-to-earth-without-crew/"
+  },
+  {
+    id:"2024-08-niche-1", y:2024, m:8, type:"ข่าวไม่ดัง",
+    q:"หลังประกาศ Starliner กลับโลกแบบไร้ลูกเรือ NASA วางแผนให้นักบินอวกาศกลับโลกด้วยยานตระกูลไหน?",
+    opts:["Soyuz","Shenzhou","Crew Dragon (SpaceX)","Orion","Dream Chaser"],
+    ans:2,
+    expl:"แผนคือให้ลูกเรือกลับด้วย SpaceX Crew Dragon (เที่ยวบิน Crew-9 ที่เกี่ยวข้อง).",
+    src:"https://www.nasa.gov/news-release/nasa-decides-to-bring-starliner-spacecraft-back-to-earth-without-crew/"
+  },
+
+  // ---- Sep 2024
+  {
+    id:"2024-09-hot-1", y:2024, m:9, type:"ข่าวดัง",
+    q:"Polaris Dawn ทำสถิติ “spacewalk เชิงพาณิชย์ครั้งแรก” เดือนกันยายน 2024: ภารกิจนี้ใช้ยานอวกาศรุ่นใด?",
+    opts:["Space Shuttle","Crew Dragon","Starliner","Soyuz","Shenzhou"],
+    ans:1,
+    expl:"Polaris Dawn บินด้วย SpaceX Crew Dragon (แคปซูลลูกเรือ).",
+    src:"https://polarisprogram.com/dawn/"
+  },
+  {
+    id:"2024-09-niche-1", y:2024, m:9, type:"ข่าวไม่ดัง",
+    q:"อีกหมุดหนึ่งของ Polaris Dawn: วงโคจรพาขึ้นไปไกลที่สุดจากโลกนับตั้งแต่ยุค Apollo ประมาณระดับใด?",
+    opts:["~400 กม.","~800 กม.","~1,400 กม.","~10,000 กม.","~384,000 กม. (ถึงดวงจันทร์)"],
+    ans:2,
+    expl:"ภารกิจรายงานว่าไปไกลสุดราวระดับ ~1,400 กม. เหนือโลก (สูงมากเมื่อเทียบกับ LEO ปกติ).",
+    src:"https://en.wikipedia.org/wiki/Polaris_Dawn"
+  },
+
+  // ---- Oct 2024
+  {
+    id:"2024-10-hot-1", y:2024, m:10, type:"ข่าวดัง",
+    q:"โนเบลฟิสิกส์ปี 2024 (ประกาศช่วง ต.ค.) ให้กับ John Hopfield และ Geoffrey Hinton จากงานสายไหนเป็นหลัก?",
+    opts:["คลื่นความโน้มถ่วง","AI/Neural Networks (รากฐาน machine learning)","คอมพิวเตอร์ควอนตัม","แบตเตอรี่ solid-state","ดาวเคราะห์นอกระบบ"],
+    ans:1,
+    expl:"โนเบลฟิสิกส์ 2024 ให้กับงานรากฐานที่ทำให้ machine learning/โครงข่ายประสาทเทียม “เวิร์กจริง”.",
+    src:"https://www.nobelprize.org/prizes/physics/2024/summary/"
+  },
+  {
+    id:"2024-10-niche-1", y:2024, m:10, type:"ข่าวไม่ดัง",
+    q:"ภารกิจ Europa Clipper (ถูกพูดถึงมากช่วงปลายปี 2024) มีเป้าหมายหลักคืออะไร?",
+    opts:[
+      "หาน้ำบนดาวอังคาร",
+      "ศึกษาดาวพฤหัสโดยตรง",
+      "สำรวจดวงจันทร์ Europa เพื่อประเมินความเป็นไปได้ของมหาสมุทร/การอยู่อาศัย",
+      "เก็บตัวอย่างจากดาวหางกลับโลก",
+      "สร้างดาวเทียมสื่อสารรอบดวงจันทร์"
+    ],
+    ans:2,
+    expl:"Europa Clipper คือภารกิจไปดู Europa แบบละเอียด (พื้นน้ำแข็ง/มหาสมุทรใต้ผิว/สภาพเอื้อต่อชีวิต).",
+    src:"https://en.wikipedia.org/wiki/Europa_Clipper"
+  },
+
+  // ---- Nov 2024
+  {
+    id:"2024-11-hot-1", y:2024, m:11, type:"ข่าวดัง",
+    q:"COP29 (UN Climate Change Conference) จัดขึ้นที่เมืองใด?",
+    opts:["Dubai","Paris","Baku","Glasgow","Sharm El-Sheikh"],
+    ans:2,
+    expl:"COP29 จัดที่บากู (Baku) ประเทศอาเซอร์ไบจาน.",
+    src:"https://unfccc.int/cop29"
+  },
+  {
+    id:"2024-11-niche-1", y:2024, m:11, type:"ข่าวไม่ดัง",
+    q:"คำว่า “COP” ใน COP29 ย่อมาจากอะไร?",
+    opts:[
+      "Climate Operation Plan",
+      "Conference of the Parties",
+      "Council of Pollution",
+      "Carbon Offset Protocol",
+      "Committee on Planet"
+    ],
+    ans:1,
+    expl:"COP = Conference of the Parties (การประชุมภาคีของอนุสัญญาฯ).",
+    src:"https://unfccc.int/cop29"
+  },
+
+  // =========================
+  // 2025 (Jan–Nov) เดือนละ 2
+  // =========================
+
+  // ---- Jan 2025
+  {
+    id:"2025-01-hot-1", y:2025, m:1, type:"ข่าวดัง",
+    q:"เดือนมกราคม 2025 Blue Origin ทำ “New Glenn” ภารกิจแรกแบบไหนสำเร็จตามรายงาน?",
+    opts:[
+      "ลงจอดแบบเครื่องบิน",
+      "เข้าสู่วงโคจร (orbital) ได้สำเร็จ",
+      "ไปถึงดวงจันทร์แล้วกลับทันที",
+      "จอดนิ่งเหนือพื้นโลก",
+      "ทดสอบเครื่องยนต์นิวเคลียร์"
+    ],
+    ans:1,
+    expl:"New Glenn เที่ยวบินแรก (NG-1) รายงานความสำเร็จด้านการขึ้นสู่วงโคจร.",
+    src:"https://en.wikipedia.org/wiki/New_Glenn"
+  },
+  {
+    id:"2025-01-niche-1", y:2025, m:1, type:"ข่าวไม่ดัง",
+    q:"ต้นมกราคม 2025 มีข่าว “รับ telemetry” จาก Parker Solar Probe หลังบินเฉียดดวงอาทิตย์: ยานลำนี้บินผ่านชั้นบรรยากาศชั้นใดของดวงอาทิตย์?",
+    opts:["Photosphere","Chromosphere","Corona","Magnetosphere","Ionosphere"],
+    ans:2,
+    expl:"Parker Solar Probe โด่งดังเรื่องการบินผ่าน “โคโรนา (Corona)” ของดวงอาทิตย์.",
+    src:"https://en.wikipedia.org/wiki/2025_in_science"
+  },
+
+  // ---- Feb 2025
+  {
+    id:"2025-02-hot-1", y:2025, m:2, type:"ข่าวดัง",
+    q:"กฎหมาย EU AI Act มี “ข้อห้ามบางประเภท” เริ่มมีผลบังคับใช้ช่วงต้นกุมภาพันธ์ 2025 (ตามไทม์ไลน์): แนวข้อห้ามนี้มักถูกเรียกว่าอะไร?",
+    opts:[
+      "ข้อบังคับการจ่ายภาษี AI",
+      "ข้อห้าม AI ความเสี่ยงยอมรับไม่ได้ (Unacceptable-risk bans)",
+      "ข้อบังคับให้ AI ใช้พลังงานสีเขียวเท่านั้น",
+      "ข้อบังคับให้ปิดโมเดล open-source",
+      "ข้อบังคับให้ใช้ AI เฉพาะโรงเรียน"
+    ],
+    ans:1,
+    expl:"ช่วงต้นปี 2025 มีหมุด “ข้อห้าม/ข้อจำกัด AI ความเสี่ยงยอมรับไม่ได้” ตาม EU AI Act.",
+    src:"https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"
+  },
+  {
+    id:"2025-02-niche-1", y:2025, m:2, type:"ข่าวไม่ดัง",
+    q:"กุมภาพันธ์ 2025 ภารกิจ IM-2 (Athena) เป็นความพยายามส่ง “ยานลงจอด” ไปดวงจันทร์ของบริษัทใด?",
+    opts:["Intuitive Machines","Firefly Aerospace","ispace","Astrobotic","Blue Origin"],
+    ans:0,
+    expl:"IM-2/Athena เป็นของ Intuitive Machines (คนละค่ายกับ Blue Ghost ของ Firefly).",
+    src:"https://en.wikipedia.org/wiki/2025_in_spaceflight"
+  },
+
+  // ---- Mar 2025
+  {
+    id:"2025-03-hot-1", y:2025, m:3, type:"ข่าวดัง",
+    q:"มีนาคม 2025 NASA ปล่อย SPHEREx + PUNCH: ภารกิจใดเน้น “ทำแผนที่ท้องฟ้าด้วยอินฟราเรด/สเปกตรัม” ในภาพรวม?",
+    opts:["PUNCH","SPHEREx","JWST","Hubble","IMAP"],
+    ans:1,
+    expl:"SPHEREx เน้นสำรวจท้องฟ้าแบบสเปกตรัมกว้าง (อินฟราเรด) เพื่อวิทย์จักรวาลหลายมิติ.",
+    src:"https://www.nasa.gov/missions/spherex/nasa-launches-spherex-punch-to-study-universe-suns-influence/"
+  },
+  {
+    id:"2025-03-niche-1", y:2025, m:3, type:"ข่าวไม่ดัง",
+    q:"มีนาคม 2025 ภารกิจ Blue Ghost Mission 1 (Firefly) ถูกพูดถึงว่าเป็นอะไร?",
+    opts:["ยานลงจอดบนดวงจันทร์ (lunar lander)","สถานีอวกาศเอกชน","กล้องโทรทรรศน์อวกาศ","ดาวเทียมสื่อสาร 6G","ยานเก็บตัวอย่างดาวหาง"],
+    ans:0,
+    expl:"Blue Ghost M1 คือ “ยานลงจอดบนดวงจันทร์” ของ Firefly Aerospace.",
+    src:"https://en.wikipedia.org/wiki/2025_in_spaceflight"
+  },
+
+  // ---- Apr 2025
+  {
+    id:"2025-04-hot-1", y:2025, m:4, type:"ข่าวดัง",
+    q:"เมษายน 2025 โครงการ Project Kuiper (Amazon) ถูกพูดถึงในมุม “ปล่อยดาวเทียมชุดแรก”: Project Kuiper ทำไปเพื่ออะไรเป็นหลัก?",
+    opts:["สำรวจดาวอังคาร","อินเทอร์เน็ตผ่านดาวเทียมวงโคจรต่ำ","ขุดแร่จากดาวเคราะห์น้อย","ปล่อยพลังงานแสงอาทิตย์จากอวกาศ","ทำโล่กันอุกกาบาต"],
+    ans:1,
+    expl:"Project Kuiper คือโครงข่ายดาวเทียม LEO สำหรับอินเทอร์เน็ต/การสื่อสาร.",
+    src:"https://en.wikipedia.org/wiki/Project_Kuiper"
+  },
+  {
+    id:"2025-04-niche-1", y:2025, m:4, type:"ข่าวไม่ดัง",
+    q:"เมษายน 2025 ดาวเทียม ESA “Biomass” (ชื่อโคตรตรง) ถูกส่งขึ้นไปเพื่อวัดอะไรเป็นหลัก?",
+    opts:["ระดับน้ำทะเลรายชั่วโมง","มวลชีวภาพป่าไม้/คาร์บอนในป่า","สัญญาณ Wi-Fi ทั่วโลก","แผ่นน้ำแข็งขั้วโลกอย่างเดียว","รังสีคอสมิก"],
+    ans:1,
+    expl:"ESA Biomass เน้นวัดมวลชีวภาพป่าไม้เพื่อเข้าใจคาร์บอน/ระบบนิเวศโลก.",
+    src:"https://en.wikipedia.org/wiki/Biomass_(satellite)"
+  },
+
+  // ---- May 2025
+  {
+    id:"2025-05-hot-1", y:2025, m:5, type:"ข่าวดัง",
+    q:"พฤษภาคม 2025 จีนยิงภารกิจ Tianwen-2: “แก่นของภารกิจ” จัดเป็นประเภทใด?",
+    opts:[
+      "ยานขนส่งมนุษย์",
+      "ยานสำรวจดาวอังคารแบบลงจอด",
+      "ภารกิจเก็บตัวอย่างวัตถุขนาดเล็กแล้วส่งกลับโลก (sample return)",
+      "ยานท่องเที่ยวอวกาศ",
+      "ดาวเทียมสื่อสาร"
+    ],
+    ans:2,
+    expl:"Tianwen-2 ถูกพูดถึงว่าเป็นภารกิจแนว “เก็บตัวอย่างแล้วส่งกลับ” (sample return) จากวัตถุขนาดเล็ก.",
+    src:"https://en.wikipedia.org/wiki/2025_in_spaceflight"
+  },
+  {
+    id:"2025-05-niche-1", y:2025, m:5, type:"ข่าวไม่ดัง",
+    q:"ชื่อชุดภารกิจ “Tianwen” เป็นโครงการสำรวจอวกาศของประเทศใด?",
+    opts:["ญี่ปุ่น","จีน","อินเดีย","สหรัฐอเมริกา","รัสเซีย"],
+    ans:1,
+    expl:"Tianwen เป็นชุดภารกิจสำรวจอวกาศของจีน (CNSA).",
+    src:"https://en.wikipedia.org/wiki/Tianwen"
+  },
+
+  // ---- Jun 2025
+  {
+    id:"2025-06-hot-1", y:2025, m:6, type:"ข่าวดัง",
+    q:"มิถุนายน 2025 Solar Orbiter ปล่อยภาพ/ข้อมูล “ขั้วใต้ของดวงอาทิตย์” ครั้งแรก: นี่สำคัญเพราะช่วยเข้าใจอะไร?",
+    opts:[
+      "วงแหวนของดาวเสาร์",
+      "สนามแม่เหล็ก/วงจรสุริยะและพลวัตของดวงอาทิตย์",
+      "การเกิดหลุมดำ",
+      "การขยายตัวของเอกภพเท่านั้น",
+      "สภาพอากาศบนดาวศุกร์"
+    ],
+    ans:1,
+    expl:"การเห็นขั้วใต้ช่วยต่อจิ๊กซอว์สนามแม่เหล็กและวงจรสุริยะที่ขับเคลื่อนสภาพอวกาศ.",
+    src:"https://www.esa.int/Science_Exploration/Space_Science/Solar_Orbiter"
+  },
+  {
+    id:"2025-06-niche-1", y:2025, m:6, type:"ข่าวไม่ดัง",
+    q:"PROBA-3 ของ ESA ถูกพูดถึงเรื่อง “formation flying” เพื่อทำอะไรได้ดีขึ้น?",
+    opts:[
+      "สร้างแรงโน้มถ่วงเทียม",
+      "ถ่ายภาพโคโรนาของดวงอาทิตย์ด้วย coronagraph (บังดวงอาทิตย์) ให้คมขึ้น",
+      "ยิงเลเซอร์ไปดวงจันทร์",
+      "ดักจับอุกกาบาต",
+      "ทำ GPS รุ่นใหม่"
+    ],
+    ans:1,
+    expl:"PROBA-3 ใช้การบินเป็นรูปแบบ (formation) เพื่อทำ coronagraphy/สังเกตโคโรนาได้มีคุณภาพ.",
+    src:"https://en.wikipedia.org/wiki/PROBA-3"
+  },
+
+  // ---- Jul 2025
+  {
+    id:"2025-07-hot-1", y:2025, m:7, type:"ข่าวดัง",
+    q:"กรกฎาคม 2025 ดาวเทียม NISAR ถูกส่งขึ้นไปเพื่อใช้เรดาร์ศึกษาโลก: จุดเด่นหลักของ NISAR คืออะไร?",
+    opts:[
+      "วัดฝุ่น PM2.5 ตรงๆ จากอวกาศ",
+      "ใช้ SAR ตรวจการเปลี่ยนแปลงพื้นผิวโลก (แผ่นดินไหว/ทรุดตัว/น้ำแข็ง ฯลฯ)",
+      "ถ่ายภาพคนบนถนนแบบ HD",
+      "สื่อสาร 7G",
+      "เป็นกล้องอินฟราเรดดูดาวไกล"
+    ],
+    ans:1,
+    expl:"NISAR ใช้เรดาร์แบบ SAR เพื่อจับการเปลี่ยนแปลงพื้นผิวโลกอย่างละเอียดมาก.",
+    src:"https://en.wikipedia.org/wiki/NISAR_(satellite)"
+  },
+  {
+    id:"2025-07-niche-1", y:2025, m:7, type:"ข่าวไม่ดัง",
+    q:"NISAR เป็นความร่วมมือระหว่างหน่วยงานใด?",
+    opts:["NASA + ESA","NASA + ISRO","JAXA + ESA","CNSA + Roscosmos","NASA + SpaceX"],
+    ans:1,
+    expl:"NISAR คือ NASA + ISRO (อินเดีย) จับมือกันทำภารกิจเรดาร์โลก.",
+    src:"https://en.wikipedia.org/wiki/NISAR_(satellite)"
+  },
+
+  // ---- Aug 2025
+  {
+    id:"2025-08-hot-1", y:2025, m:8, type:"ข่าวดัง",
+    q:"สิงหาคม 2025 ยาน JUICE ของ ESA ทำ Venus flyby เพื่ออะไรเป็นหลัก?",
+    opts:[
+      "ลงจอดบนดาวศุกร์",
+      "เติมเชื้อเพลิงจากชั้นบรรยากาศ",
+      "ใช้แรงโน้มถ่วงช่วยปรับวิถี (gravity assist)",
+      "เก็บตัวอย่างเมฆกลับโลก",
+      "ทดสอบเครื่องยนต์นิวเคลียร์"
+    ],
+    ans:2,
+    expl:"Flyby ใช้เป็น gravity assist เพื่อประหยัดเชื้อเพลิงและปรับเส้นทางไปเป้าหมายใหญ่.",
+    src:"https://en.wikipedia.org/wiki/Jupiter_Icy_Moons_Explorer"
+  },
+  {
+    id:"2025-08-niche-1", y:2025, m:8, type:"ข่าวไม่ดัง",
+    q:"JUICE ย่อมาจากอะไร และไปที่ไหนเป็นหลัก?",
+    opts:[
+      "Jupiter Icy Moons Explorer → ไปดาวพฤหัสและดวงจันทร์น้ำแข็ง",
+      "Jupiter Ultra Ice Experiment → ไปดาวยูเรนัส",
+      "Jet Utility In-space Cargo Engine → ไป ISS",
+      "Juno Interstellar Explorer → ไปนอกระบบสุริยะ",
+      "Jupiter Universal Imaging Camera → ไปดาวอังคาร"
+    ],
+    ans:0,
+    expl:"JUICE = Jupiter Icy Moons Explorer เป้าหมายคือระบบดาวพฤหัส โดยเฉพาะดวงจันทร์น้ำแข็ง.",
+    src:"https://en.wikipedia.org/wiki/Jupiter_Icy_Moons_Explorer"
+  },
+
+  // ---- Sep 2025
+  {
+    id:"2025-09-hot-1", y:2025, m:9, type:"ข่าวดัง",
+    q:"กันยายน 2025 ภารกิจ IMAP ถูกส่งไปทำงานใกล้จุด L1: เป้าหมายหลักคืออะไร?",
+    opts:[
+      "ทำแผนที่ขอบเขตระหว่างเฮลิโอสเฟียร์กับสสารระหว่างดาว",
+      "สร้างดาวเทียมสื่อสาร Wi-Fi",
+      "ปลูกพืชในอวกาศ",
+      "เก็บตัวอย่างจากดวงจันทร์",
+      "ทดลองขับเคลื่อน warp drive"
+    ],
+    ans:0,
+    expl:"IMAP ศึกษาปฏิสัมพันธ์ของลมสุริยะกับสสารระหว่างดาว (interstellar medium).",
+    src:"https://en.wikipedia.org/wiki/Interstellar_Mapping_and_Acceleration_Probe"
+  },
+  {
+    id:"2025-09-niche-1", y:2025, m:9, type:"ข่าวไม่ดัง",
+    q:"IMAP ย่อมาจากอะไร?",
+    opts:[
+      "Interstellar Mapping and Acceleration Probe",
+      "International Mars Access Project",
+      "Infrared Mapping and Asteroid Probe",
+      "Ion Magnetosphere Analysis Platform",
+      "Interplanetary Mining and Processing"
+    ],
+    ans:0,
+    expl:"IMAP = Interstellar Mapping and Acceleration Probe.",
+    src:"https://en.wikipedia.org/wiki/Interstellar_Mapping_and_Acceleration_Probe"
+  },
+
+  // ---- Oct 2025
+  {
+    id:"2025-10-hot-1", y:2025, m:10, type:"ข่าวดัง",
+    q:"โนเบลฟิสิกส์ 2025 (ประกาศ ต.ค.) ให้กับ Donoghue, Gross, Narayanan จากแนวคิดใหญ่เรื่องอะไร?",
+    opts:[
+      "คลื่นความโน้มถ่วง",
+      "การค้นพบสสารมืด",
+      "Asymptotic freedom และผลต่อแรงนิวเคลียร์อย่างเข้ม (strong interaction)",
+      "โฟโตอิเล็กทริก",
+      "ทฤษฎีสตริงเชิงทดลอง"
+    ],
+    ans:2,
+    expl:"โนเบลฟิสิกส์ 2025 เน้น “asymptotic freedom” และผลต่อแรงอย่างเข้มในฟิสิกส์อนุภาค.",
+    src:"https://www.nobelprize.org/prizes/physics/2025/summary/"
+  },
+  {
+    id:"2025-10-niche-1", y:2025, m:10, type:"ข่าวไม่ดัง",
+    q:"โนเบลเคมี 2025 (ประกาศ ต.ค.) โฟกัสงานด้านใดเป็นหลักตามสรุปทางการ?",
+    opts:[
+      "การแยกเกลือออกจากน้ำทะเล",
+      "พอลิเมอร์ย่อยสลายได้",
+      "โครงสร้าง/ระบบระดับโมเลกุลที่ควบคุมการจับ-ปล่อย/การจัดวางได้ (แนว molecular machines/cages)",
+      "แบตเตอรี่ลิเธียมรุ่นใหม่",
+      "วัคซีน mRNA"
+    ],
+    ans:2,
+    expl:"สรุปทางการของโนเบลเคมี 2025 เน้น “สถาปัตยกรรมระดับโมเลกุล” ที่ควบคุมการทำงาน/การกัก-ปล่อยได้.",
+    src:"https://www.nobelprize.org/prizes/chemistry/2025/summary/"
+  },
+
+  // ---- Nov 2025
+  {
+    id:"2025-11-hot-1", y:2025, m:11, type:"ข่าวดัง",
+    q:"ข่าวพลังงานปลายปี 2025: Valar Atomics รายงาน “achieved criticality” คำว่า criticality หมายถึงอะไรในบริบทนิวเคลียร์?",
+    opts:[
+      "เครื่องปฏิกรณ์ระเบิด",
+      "เกิดปฏิกิริยาลูกโซ่นิวเคลียร์แบบยั่งยืนได้เอง (self-sustaining chain reaction)",
+      "ระบบดับตัวเองทันที",
+      "อุณหภูมิเป็นศูนย์สัมบูรณ์",
+      "เกิดพลาสมาฟิวชันสำเร็จเชิงพาณิชย์"
+    ],
+    ans:1,
+    expl:"Criticality = ปฏิกิริยาลูกโซ่แบบ “ยั่งยืนได้เอง” (ไม่ดับ ไม่พุ่ง runaway).",
+    src:"https://www.valaratomics.com/"
+  },
+  {
+    id:"2025-11-niche-1", y:2025, m:11, type:"ข่าวไม่ดัง",
+    q:"ถ้า reactor อยู่ในสภาวะ “supercritical” (เหนือวิกฤต) โดยหลักการจะหมายถึงอะไร?",
+    opts:[
+      "ปฏิกิริยาลูกโซ่เพิ่มขึ้น (กำลังเพิ่ม) ถ้าไม่ควบคุม",
+      "ปฏิกิริยาลูกโซ่หยุดสนิท",
+      "ไม่มีนิวตรอนเลย",
+      "อุณหภูมิต่ำมากจนแข็ง",
+      "เกิดฟิวชันทันที"
+    ],
+    ans:0,
+    expl:"Supercritical = มีแนวโน้มให้ปฏิกิริยาลูกโซ่ “โตขึ้น” จึงต้องควบคุมอย่างเข้มงวด.",
+    src:"https://en.wikipedia.org/wiki/Criticality_(nuclear)"
+  }
+];
+
+function savePrefs(){
+  const prefs = {
+    year: $("yearSel").value,
+    month: $("monthSel").value,
+    mode: $("modeSel").value
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
+}
+
+function loadPrefs(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch{ return null; }
+}
+
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function buildSelectors(){
+  const yearSel = $("yearSel");
+  const monthSel = $("monthSel");
+
+  yearSel.innerHTML = `
+    <option value="ALL">ทุกปี (2024–2025)</option>
+    <option value="2024">ปี 2024 (ม.ค.–พ.ย.)</option>
+    <option value="2025">ปี 2025 (ม.ค.–พ.ย.)</option>
+  `;
+
+  let monthOpts = `<option value="ALL">ทุกเดือน</option>`;
+  for(let m=1;m<=11;m++){
+    monthOpts += `<option value="${m}">${TH_MONTHS[m]} (${m})</option>`;
+  }
+  monthSel.innerHTML = monthOpts;
+
+  const prefs = loadPrefs();
+  if(prefs){
+    yearSel.value = prefs.year || "ALL";
+    monthSel.value = prefs.month || "ALL";
+    $("modeSel").value = prefs.mode || "timeline";
+  }
+}
+
+function filteredQuestions(){
+  const y = $("yearSel").value;
+  const m = $("monthSel").value;
+
+  let arr = QUESTIONS.slice();
+
+  if(y !== "ALL") arr = arr.filter(q => String(q.y) === y);
+  if(m !== "ALL") arr = arr.filter(q => String(q.m) === m);
+
+  const mode = $("modeSel").value;
+  if(mode === "timeline"){
+    arr.sort((a,b)=>{
+      if(a.y !== b.y) return a.y - b.y;
+      if(a.m !== b.m) return a.m - b.m;
+      const ta = a.type === "ข่าวดัง" ? 0 : 1;
+      const tb = b.type === "ข่าวดัง" ? 0 : 1;
+      return ta - tb;
+    });
+  }else{
+    shuffle(arr);
+  }
+
+  return arr;
+}
+
+function resetStats(){
+  state.idx = 0;
+  state.locked = false;
+  state.score = 0;
+  state.seen = 0;
+  state.correct = 0;
+  state.wrong = 0;
+  state.current = null;
+
+  $("statSeen").textContent = `ข้อ: 0`;
+  $("statCorrect").textContent = `ถูก: 0`;
+  $("statWrong").textContent = `ผิด: 0`;
+  $("statScore").textContent = `คะแนน: 0`;
+
+  $("progress").style.width = "0%";
+  $("fb").style.display = "none";
+  $("btnNext").disabled = true;
+}
+
+function start(){
+  savePrefs();
+  resetStats();
+
+  const pool = filteredQuestions();
+  state.pool = pool;
+
+  if(pool.length === 0){
+    $("qtext").textContent = "ไม่มีข้อในเงื่อนไขที่เลือก (ลองเลือก “ทุกเดือน” หรือ “ทุกปี”)";
+    $("opts").innerHTML = "";
+    $("badgeWhen").textContent = "—";
+    $("badgeType").textContent = "—";
+    return;
+  }
+
+  $("result").style.display = "none";
+  $("quiz").style.display = "block";
+  render();
+}
+
+function render(){
+  state.locked = false;
+  $("btnNext").disabled = true;
+
+  const q = state.pool[state.idx];
+  state.current = q;
+
+  const when = `${TH_MONTHS[q.m]} ${q.y}`;
+  $("badgeWhen").textContent = when;
+
+  const typeBadge = $("badgeType");
+  typeBadge.textContent = q.type;
+  typeBadge.className = "badge " + (q.type === "ข่าวดัง" ? "hot" : "niche");
+
+  $("qtext").textContent = `${state.idx + 1}/${state.pool.length} • ${q.q}`;
+
+  const opts = $("opts");
+  opts.innerHTML = "";
+
+  q.opts.forEach((text, i) => {
+    const b = document.createElement("button");
+    b.className = "opt";
+    b.textContent = text;
+    b.onclick = () => pick(i, b);
+    opts.appendChild(b);
+  });
+
+  $("fb").style.display = "none";
+  updateProgress();
+}
+
+function pick(i, btn){
+  if(state.locked) return;
+  state.locked = true;
+
+  const q = state.current;
+  const all = Array.from(document.querySelectorAll(".opt"));
+  all.forEach(x => x.disabled = true);
+
+  state.seen += 1;
+
+  if(i === q.ans){
+    btn.classList.add("correct");
+    state.score += 1;
+    state.correct += 1;
+  }else{
+    btn.classList.add("wrong");
+    all[q.ans].classList.add("correct");
+    state.wrong += 1;
+  }
+
+  $("statSeen").textContent = `ข้อ: ${state.seen}`;
+  $("statCorrect").textContent = `ถูก: ${state.correct}`;
+  $("statWrong").textContent = `ผิด: ${state.wrong}`;
+  $("statScore").textContent = `คะแนน: ${state.score}`;
+
+  const fb = $("fb");
+  const correctText = q.opts[q.ans];
+  const srcLink = q.src ? `<div class="src">แหล่งอ้างอิง: <a href="${q.src}" target="_blank" rel="noopener">เปิดดู</a></div>` : "";
+  fb.innerHTML = `<b>เฉลย:</b> ${correctText}<br><br>${q.expl || ""}${srcLink}`;
+  fb.style.display = "block";
+
+  $("btnNext").disabled = false;
+}
+
+function next(){
+  if(state.pool.length === 0) return;
+
+  if(state.idx < state.pool.length - 1){
+    state.idx += 1;
+    render();
+  }else{
+    showResult();
+  }
+}
+
+function showResult(){
+  $("quiz").style.display = "none";
+  $("result").style.display = "block";
+  $("progress").style.width = "100%";
+
+  $("finalScore").textContent = `${state.score} / ${state.pool.length}`;
+
+  const pct = (state.score / state.pool.length) * 100;
+  let msg = "";
+  if(pct >= 85) msg = "โหดจัด ✅ ระดับอ่านข่าวแล้วจับประเด็นได้แบบคนออกข้อสอบ";
+  else if(pct >= 60) msg = "ดีมาก! เหลือแค่ทวนข้อที่พลาดให้คมขึ้นอีกนิด";
+  else msg = "ยังได้อยู่—แต่ต้องไล่ทวน (โดยเฉพาะข่าวดัง) แล้วค่อยกลับมายิงใหม่";
+
+  $("finalMsg").textContent = msg;
+}
+
+function clearAll(){
+  resetStats();
+  $("qtext").textContent = "เคลียร์แล้ว กด “เริ่ม / รีสตาร์ต” เพื่อเริ่มใหม่ 🔁";
+  $("opts").innerHTML = "";
+  $("badgeWhen").textContent = "—";
+  $("badgeType").textContent = "—";
+}
+
+function updateProgress(){
+  const total = state.pool.length || 1;
+  const p = (state.idx / total) * 100;
+  $("progress").style.width = `${Math.max(0, Math.min(100, p))}%`;
+}
+
+function wire(){
+  $("btnStart").onclick = start;
+  $("btnNext").onclick = next;
+  $("btnReset").onclick = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    buildSelectors();
+    clearAll();
+  };
+  $("btnAgain").onclick = start;
+
+  $("yearSel").onchange = () => { savePrefs(); };
+  $("monthSel").onchange = () => { savePrefs(); };
+  $("modeSel").onchange = () => { savePrefs(); };
+}
+
+(function init(){
+  buildSelectors();
+  wire();
+  clearAll();
+})();
+</script>
+
+</body>
+</html>

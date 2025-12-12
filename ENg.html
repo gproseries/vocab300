@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>TGAT1: God-Tier (Bilingual Edition)</title>
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;800;900&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;800;900&display=swap");
+
+      :root {
+        --bg: #020617;
+        --panel: rgba(15, 23, 42, 0.78);
+        --card: #0f172a;
+        --card-2: #0b1224;
+
+        --text: #e5e7eb;
+        --muted: #94a3b8;
+
+        --border: rgba(148, 163, 184, 0.18);
+
+        --primary: #2563eb;
+        --primary-2: #38bdf8;
+
+        --success: #22c55e;
+        --danger: #ef4444;
+        --warn: #f59e0b;
+
+        --shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+        --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.35);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        font-family: "Kanit", system-ui, -apple-system;
+        background:
+          radial-gradient(900px 500px at 20% 10%, rgba(37, 99, 235, 0.18), transparent 60%),
+          radial-gradient(700px 400px at 80% 20%, rgba(56, 189, 248, 0.12), transparent 55%),
+          var(--bg);
+        color: var(--text);
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding:
+          calc(10px + env(safe-area-inset-top))
+          calc(10px + env(safe-area-inset-right))
+          calc(16px + env(safe-area-inset-bottom))
+          calc(10px + env(safe-area-inset-left));
+        -webkit-text-size-adjust: 100%;
+      }
+
+      /* HUD */
+      .hud {
+        width: min(980px, 100%);
+        padding: 14px 16px;
+        background: rgba(15, 23, 42, 0.75);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: calc(10px + env(safe-area-inset-top));
+        z-index: 100;
+        box-shadow: var(--shadow-soft);
+        backdrop-filter: blur(10px);
+      }
+
+      .level-badge {
+        background: linear-gradient(90deg, rgba(37, 99, 235, 0.95), rgba(56, 189, 248, 0.95));
+        color: #fff;
+        padding: 8px 14px;
+        border-radius: 999px;
+        font-weight: 900;
+        font-size: 0.98rem;
+        letter-spacing: 0.2px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+      }
+
+      .streak-counter {
+        color: rgba(229, 231, 235, 0.92);
+        font-weight: 900;
+        font-size: 1rem;
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .streak-counter span {
+        color: var(--warn);
+        font-weight: 900;
+      }
+
+      .arena {
+        width: min(980px, 100%);
+        margin-top: 14px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-bottom: 18px;
+      }
+
+      .card {
+        width: 100%;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .card-inner {
+        padding: 18px;
+        background: rgba(2, 6, 23, 0.25);
+      }
+
+      .question-category {
+        color: rgba(229, 231, 235, 0.9);
+        font-size: 0.92rem;
+        letter-spacing: 0.7px;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .qcat-left {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(2, 6, 23, 0.6);
+      }
+
+      .qcat-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--primary), var(--primary-2));
+        box-shadow: 0 0 18px rgba(56, 189, 248, 0.35);
+      }
+
+      .translate-toggle {
+        background: rgba(2, 6, 23, 0.65);
+        border: 1px solid rgba(37, 99, 235, 0.5);
+        color: rgba(229, 231, 235, 0.92);
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: 0.18s ease;
+        font-family: "Kanit", sans-serif;
+        white-space: nowrap;
+      }
+      .translate-toggle:hover {
+        transform: translateY(-1px);
+        border-color: rgba(56, 189, 248, 0.65);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
+      }
+      .translate-toggle:active { transform: scale(0.98); }
+
+      .question-text {
+        font-size: 1.22rem;
+        font-weight: 700;
+        margin: 10px 0 12px;
+        line-height: 1.7;
+        white-space: pre-line;
+      }
+
+      .thai-translation {
+        font-family: "Sarabun", sans-serif;
+        color: rgba(229, 231, 235, 0.9);
+        font-size: 1rem;
+        margin: 0 0 14px;
+        line-height: 1.65;
+        display: none;
+        border-left: 3px solid rgba(245, 158, 11, 0.85);
+        background: rgba(245, 158, 11, 0.06);
+        padding: 12px 12px;
+        border-radius: 0 12px 12px 0;
+        white-space: pre-line;
+      }
+
+      .passage-wrap {
+        margin: 12px 0 6px;
+      }
+
+      .passage-box {
+        background: rgba(2, 6, 23, 0.55);
+        padding: 14px;
+        border-radius: 14px;
+        font-size: 1rem;
+        line-height: 1.8;
+        border: 1px solid var(--border);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+        color: rgba(229, 231, 235, 0.92);
+        max-height: 320px;
+        overflow-y: auto;
+        white-space: pre-line;
+      }
+
+      .passage-box::-webkit-scrollbar { width: 10px; }
+      .passage-box::-webkit-scrollbar-thumb {
+        background: rgba(148, 163, 184, 0.25);
+        border-radius: 999px;
+        border: 2px solid rgba(2, 6, 23, 0.6);
+      }
+
+      .passage-thai {
+        font-family: "Sarabun", sans-serif;
+        color: rgba(148, 163, 184, 0.95);
+        font-size: 0.95rem;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px dashed rgba(148, 163, 184, 0.25);
+        display: none;
+        white-space: pre-line;
+      }
+
+      .options-list {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      .option-btn {
+        background: rgba(2, 6, 23, 0.55);
+        color: rgba(229, 231, 235, 0.92);
+        border: 1px solid var(--border);
+        padding: 14px 14px;
+        border-radius: 14px;
+        font-size: 1.05rem;
+        text-align: left;
+        cursor: pointer;
+        transition: 0.16s ease;
+        user-select: none;
+      }
+
+      .option-btn:hover {
+        border-color: rgba(56, 189, 248, 0.45);
+        transform: translateY(-1px);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
+      }
+
+      .option-btn.correct {
+        background: rgba(34, 197, 94, 0.16);
+        border-color: rgba(34, 197, 94, 0.6);
+        color: #d1fae5;
+        font-weight: 900;
+      }
+
+      .option-btn.wrong {
+        background: rgba(239, 68, 68, 0.16);
+        border-color: rgba(239, 68, 68, 0.6);
+        color: #fee2e2;
+        font-weight: 900;
+      }
+
+      .feedback-area {
+        margin-top: 14px;
+        padding: 14px;
+        background: rgba(2, 6, 23, 0.55);
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        border-left: 4px solid rgba(245, 158, 11, 0.85);
+        display: none;
+        width: 100%;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+        animation: fadeIn 0.28s ease-out;
+      }
+
+      .feedback-title {
+        font-weight: 900;
+        font-size: 1.15rem;
+        margin-bottom: 8px;
+      }
+
+      .feedback-detail {
+        font-size: 1rem;
+        color: rgba(229, 231, 235, 0.92);
+        line-height: 1.7;
+        font-family: "Sarabun", sans-serif;
+      }
+
+      .next-btn {
+        width: min(560px, 100%);
+        background: linear-gradient(90deg, rgba(37, 99, 235, 0.95), rgba(56, 189, 248, 0.95));
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        padding: 14px 18px;
+        border-radius: 999px;
+        font-size: 1.05rem;
+        font-weight: 900;
+        margin-top: 14px;
+        cursor: pointer;
+        display: none;
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
+        transition: 0.16s ease;
+      }
+
+      .next-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 18px 38px rgba(0, 0, 0, 0.55);
+      }
+      .next-btn:active { transform: scale(0.98); }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      @media (max-width: 600px) {
+        .hud { border-radius: 16px; padding: 12px 12px; }
+        .question-text { font-size: 1.12rem; }
+        .option-btn { padding: 13px 13px; font-size: 0.98rem; }
+        .card-inner { padding: 14px; }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="hud">
+      <div class="level-badge" id="levelBadge">LV.1 ROOKIE</div>
+      <div class="streak-counter">🔥 Streak: <span id="streak">0</span></div>
+    </div>
+
+    <div class="arena">
+      <div class="card">
+        <div class="card-inner">
+          <div class="question-category">
+            <div class="qcat-left">
+              <div class="qcat-dot"></div>
+              <span id="qCategory">VOCABULARY</span>
+            </div>
+            <button class="translate-toggle" id="translateBtn" type="button">
+              🇬🇧/🇹🇭 แปลโจทย์
+            </button>
+          </div>
+
+          <div id="passageArea" class="passage-wrap" style="display: none">
+            <div id="passageText"></div>
+            <div id="passageTextTH" class="passage-thai"></div>
+          </div>
+
+          <div class="question-text" id="qText">Loading Question...</div>
+          <div class="thai-translation" id="qTextTH">คำแปลภาษาไทยจะปรากฏที่นี่</div>
+
+          <div class="options-list" id="optionsGrid"></div>
+
+          <div class="feedback-area" id="feedbackArea">
+            <div class="feedback-title" id="fbTitle"></div>
+            <div class="feedback-detail" id="fbDetail"></div>
+          </div>
+        </div>
+      </div>
+
+      <button class="next-btn" id="nextBtn" type="button">Next Challenge ➡</button>
+    </div>
+
+    <script>
+      const questionBank = [
+        {
+          lv: 1,
+          type: "VOCAB",
+          q: "The constant noise from the construction site was ____ to the residents.",
+          q_th: "เสียงดังรบกวนอย่างต่อเนื่องจากเขตก่อสร้างนั้น ____ ต่อผู้อยู่อาศัย",
+          opts: ["beneficial", "detrimental", "essential", "trivial"],
+          ans: 1,
+          expl:
+            "Detrimental = เป็นอันตราย/ก่อให้เกิดผลเสีย (Context: Noise เป็นสิ่งไม่ดี) <br>(Beneficial=เป็นประโยชน์, Essential=จำเป็น, Trivial=ไม่สำคัญ/เล็กน้อย)",
+        },
+        {
+          lv: 1,
+          type: "VOCAB",
+          q: "She decided to ____ her savings to start a new business.",
+          q_th: "เธอตัดสินใจที่จะ ____ เงินออมของเธอเพื่อเริ่มธุรกิจใหม่",
+          opts: ["utilize", "ignore", "abolish", "banish"],
+          ans: 0,
+          expl: "Utilize = นำไปใช้ประโยชน์ (ใช้เงินลงทุน) <br>(Abolish=ยกเลิกกฎหมาย, Banish=เนรเทศ)",
+        },
+        {
+          lv: 1,
+          type: "GRAMMAR",
+          q: "Neither the teacher nor the students ____ aware of the fire drill.",
+          q_th: "ทั้งครูและนักเรียนต่างก็ไม่ทราบเรื่องการซ้อมหนีไฟ",
+          opts: ["was", "were", "is", "has"],
+          ans: 1,
+          expl: "กฎ: Neither...nor ให้ผันกริยาตามประธานตัวหลัง (students = พหูพจน์) จึงใช้ 'were'",
+        },
+        {
+          lv: 1,
+          type: "CONVO",
+          q: "A: 'I'm terribly sorry for breaking your vase.'\nB: '_______'",
+          q_th: "A: 'ฉันขอโทษจริงๆ ที่ทำแจกันคุณแตก' \nB: '_______'",
+          opts: ["You're welcome.", "It doesn't matter.", "No hard feelings.", "Don't worry about it."],
+          ans: 3,
+          expl:
+            "Don't worry about it. = ไม่ต้องกังวลไปหรอก (ใช้ตอบรับคำขอโทษอย่างสุภาพ) <br>(No hard feelings มักใช้หลังจากการทะเลาะกันว่าไม่โกรธเคือง)",
+        },
+
+        {
+          lv: 2,
+          type: "TEXT COMPLETION",
+          passage:
+            "Artificial Intelligence has evolved rapidly. ______, ethical concerns regarding privacy and bias have emerged.",
+          passage_th:
+            "ปัญญาประดิษฐ์ (AI) ได้วิวัฒนาการอย่างรวดเร็ว ______ ความกังวลด้านจริยธรรมเกี่ยวกับความเป็นส่วนตัวและอคติก็ได้ปรากฏขึ้น",
+          q: "Choose the best connector.",
+          q_th: "เลือกคำเชื่อมที่เหมาะสมที่สุด",
+          opts: ["Additionally", "Consequently", "However", "Similarly"],
+          ans: 2,
+          expl: "However = อย่างไรก็ตาม (แสดงความขัดแย้ง: พัฒนาเร็ว (ดี) vs มีความกังวล (ลบ))",
+        },
+        {
+          lv: 2,
+          type: "VOCAB",
+          q: "The politician's speech was full of ____ promises that he couldn't keep.",
+          q_th: "สุนทรพจน์ของนักการเมืองเต็มไปด้วยคำสัญญาที่ ____ ซึ่งเขาไม่สามารถทำได้จริง",
+          opts: ["empty", "solid", "valid", "rigid"],
+          ans: 0,
+          expl: "Empty promises = คำสัญญาปากเปล่า/ลมๆ แล้งๆ",
+        },
+        {
+          lv: 2,
+          type: "READING (SHORT)",
+          passage:
+            "Microplastics have been found in the deepest parts of the ocean. These tiny particles can enter the food chain, posing risks to marine life and potentially humans.",
+          passage_th:
+            "ไมโครพลาสติกถูกพบในส่วนที่ลึกที่สุดของมหาสมุทร อนุภาคขนาดเล็กเหล่านี้สามารถเข้าสู่ห่วงโซ่อาหาร ก่อให้เกิดความเสี่ยงต่อสิ่งมีชีวิตในทะเลและอาจรวมถึงมนุษย์ด้วย",
+          q: "What is the primary concern mentioned?",
+          q_th: "ข้อกังวลหลักที่ถูกกล่าวถึงคืออะไร?",
+          opts: [
+            "The depth of the ocean.",
+            "The size of particles.",
+            "Contamination of the food chain.",
+            "The amount of plastic production.",
+          ],
+          ans: 2,
+          expl: "ใจความสำคัญคือ 'enter the food chain' (ปนเปื้อนในห่วงโซ่อาหาร)",
+        },
+        {
+          lv: 2,
+          type: "GRAMMAR",
+          q: "If I ____ you, I would accept the offer immediately.",
+          q_th: "ถ้าฉันเป็นคุณ ฉันจะตอบรับข้อเสนอนั้นทันที",
+          opts: ["am", "was", "were", "had been"],
+          ans: 2,
+          expl:
+            "If Clause แบบที่ 2 (เรื่องสมมติในปัจจุบัน/เป็นไปไม่ได้): If I were you (ใช้ were กับทุกประธานในภาษาทางการ)",
+        },
+
+        {
+          lv: 3,
+          type: "READING COMPREHENSION",
+          passage:
+            "The concept of the 'gig economy' refers to a labor market characterized by the prevalence of short-term contracts or freelance work as opposed to permanent jobs. While it offers flexibility and autonomy for workers, critics argue that it erodes traditional employment benefits such as health insurance, paid leave, and job security.",
+          passage_th:
+            "แนวคิด 'gig economy' หมายถึงตลาดแรงงานที่มีลักษณะเด่นคือสัญญาจ้างระยะสั้นหรืองานฟรีแลนซ์ ตรงข้ามกับงานประจำ แม้ว่าจะมอบความยืดหยุ่นและอิสระแก่คนทำงาน แต่นักวิจารณ์โต้แย้งว่ามันกัดกร่อนสวัสดิการการจ้างงานแบบดั้งเดิม เช่น ประกันสุขภาพ การลาหยุดโดยได้รับค่าจ้าง และความมั่นคงในงาน",
+          q: "What is the main criticism of the gig economy?",
+          q_th: "ข้อวิจารณ์หลักของ gig economy คืออะไร?",
+          opts: [
+            "It lacks flexibility.",
+            "It provides too much autonomy.",
+            "It reduces job security and benefits.",
+            "It requires long-term contracts.",
+          ],
+          ans: 2,
+          expl: "Key phrase: 'erodes traditional employment benefits... and job security' (ลดทอนสวัสดิการและความมั่นคง)",
+        },
+        {
+          lv: 3,
+          type: "VOCAB (SYNONYM)",
+          q: "The evidence presented in court was **irrefutable**.",
+          q_th: "หลักฐานที่นำเสนอในศาลนั้น **irrefutable** (ไม่อาจโต้แย้งได้)",
+          opts: ["questionable", "undeniable", "ambiguous", "debatable"],
+          ans: 1,
+          expl:
+            "Irrefutable = ปฏิเสธไม่ได้/เถียงไม่ได้ = Undeniable <br>(Questionable/Debatable = น่าสงสัย/ถกเถียงได้)",
+        },
+        {
+          lv: 3,
+          type: "TEXT COMPLETION",
+          passage:
+            "Urbanization has led to increased pollution. ______, city planners are designing more green spaces to mitigate these effects.",
+          passage_th:
+            "การขยายตัวของเมืองนำไปสู่มลพิษที่เพิ่มขึ้น ______ นักวางผังเมืองกำลังออกแบบพื้นที่สีเขียวมากขึ้นเพื่อบรรเทาผลกระทบเหล่านี้",
+          q: "Choose the correct connector.",
+          q_th: "เลือกคำเชื่อมที่ถูกต้อง",
+          opts: ["In contrast", "As a result", "Otherwise", "Despite"],
+          ans: 1,
+          expl:
+            "As a result = ดังนั้น/ด้วยเหตุนี้ (เป็นผลลัพธ์ของการแก้ปัญหา) <br>มลพิษเพิ่ม -> จึงต้องสร้างพื้นที่สีเขียว",
+        },
+        {
+          lv: 3,
+          type: "VOCAB",
+          q: "His **pragmatic** approach to solving the problem was appreciated by the team.",
+          q_th: "วิธีการแก้ปัญหาแบบ **pragmatic** ของเขาได้รับความชื่นชมจากทีม",
+          opts: ["idealistic", "practical", "theoretical", "chaotic"],
+          ans: 1,
+          expl:
+            "Pragmatic = เน้นปฏิบัติจริง/เป็นไปได้จริง = Practical <br>(Idealistic = อุดมคติเกินไป, Theoretical = ทฤษฎี)",
+        },
+
+        {
+          lv: 4,
+          type: "ERROR IDENTIFICATION",
+          q: "Scarcely (A) had he arrived (B) at the station (C) than the train left (D).",
+          q_th: "ทันทีที่เขามาถึงสถานี รถไฟก็ออกไป (หาจุดผิด)",
+          opts: ["A", "B", "C", "D"],
+          ans: 3,
+          expl:
+            "แก้ D (than -> when) <br>สูตร: Scarcely/Hardly ... when ... (ทันทีที่...ก็...) <br>ถ้าใช้ No sooner ... ถึงจะคู่กับ than",
+        },
+        {
+          lv: 4,
+          type: "VOCAB (C2 LEVEL)",
+          q: "The CEO’s speech was full of **hyperbole**, making it hard to trust the company's future projections.",
+          q_th: "สุนทรพจน์ของ CEO เต็มไปด้วย **hyperbole** ทำให้ยากที่จะเชื่อถือการคาดการณ์อนาคตของบริษัท",
+          opts: ["understatement", "exaggeration", "accuracy", "modesty"],
+          ans: 1,
+          expl:
+            "Hyperbole = การกล่าวเกินจริง (Exaggeration) <br>(Understatement = การถ่อมตัว/พูดให้น้อยกว่าจริง, Modesty = ความถ่อมตน)",
+        },
+        {
+          lv: 4,
+          type: "LOGIC & INFERENCE",
+          passage:
+            "While electric vehicles (EVs) produce zero tailpipe emissions, their overall carbon footprint depends heavily on how the electricity powering them is generated. If the grid relies on coal, the benefits are diminished.",
+          passage_th:
+            "ในขณะที่รถยนต์ไฟฟ้า (EV) ไม่ปล่อยไอเสียจากท่อไอเสีย แต่รอยเท้าคาร์บอนโดยรวมขึ้นอยู่กับวิธีการผลิตไฟฟ้าที่ใช้ชาร์จ หากโครงข่ายไฟฟ้ายังพึ่งพาถ่านหิน ประโยชน์ก็จะลดน้อยลง",
+          q: "What can be inferred from the passage?",
+          q_th: "สรุปความได้ว่าอย่างไร?",
+          opts: [
+            "EVs are always 100% clean.",
+            "Coal is the best source for EVs.",
+            "Clean energy grids are necessary to maximize EV benefits.",
+            "EVs produce more pollution than gas cars.",
+          ],
+          ans: 2,
+          expl:
+            "อนุมานได้ว่า: เราต้องมีโครงข่ายไฟฟ้าที่สะอาด (Clean energy grids) เพื่อให้ EV มีประโยชน์สูงสุด (Maximize benefits)",
+        },
+        {
+          lv: 4,
+          type: "VOCAB (C2 LEVEL)",
+          q: "The diplomat handled the delicate situation with great **finesse**.",
+          q_th: "นักการทูตรับมือกับสถานการณ์ที่ละเอียดอ่อนด้วย **finesse** อย่างมาก",
+          opts: ["clumsiness", "skill and tact", "anger", "ignorance"],
+          ans: 1,
+          expl: "Finesse = ชั้นเชิง/ไหวพริบ/ความแนบเนียน (Skill and tact)",
+        },
+        {
+          lv: 4,
+          type: "ERROR IDENTIFICATION",
+          q: "The number of (A) homeless people (B) in the city (C) have increased (D) significantly.",
+          q_th: "จำนวนคนไร้บ้านในเมืองเพิ่มขึ้นอย่างมีนัยสำคัญ (หาจุดผิด)",
+          opts: ["A", "B", "C", "D"],
+          ans: 3,
+          expl:
+            "แก้ D (have -> has) <br>กฎ: 'The number of' + N.พหูพจน์ ถือเป็นเอกพจน์ (เจาะจงที่ 'จำนวน') ต้องใช้ Verb เอกพจน์ (has)",
+        },
+      ];
+
+      const $ = (id) => document.getElementById(id);
+      const shuffle = (arr) => {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      };
+
+      let currentLevel = 1;
+      let streak = 0;
+      let availableQuestions = [];
+      let isThaiVisible = false;
+
+      function filterQuestions() {
+        availableQuestions = questionBank.filter((q) => q.lv <= currentLevel);
+        shuffle(availableQuestions);
+      }
+
+      function setThaiVisibility(visible) {
+        const qThai = $("qTextTH");
+        const pThai = $("passageTextTH");
+        qThai.style.display = visible ? "block" : "none";
+        if (pThai && pThai.textContent.trim() !== "") pThai.style.display = visible ? "block" : "none";
+      }
+
+      function toggleTranslation() {
+        isThaiVisible = !isThaiVisible;
+        setThaiVisibility(isThaiVisible);
+      }
+
+      function loadQuestion() {
+        if (availableQuestions.length === 0) {
+          levelUp();
+          return;
+        }
+
+        const q = availableQuestions[0];
+
+        isThaiVisible = false;
+        setThaiVisibility(false);
+
+        $("qCategory").textContent = `${q.type} • LEVEL ${q.lv}`;
+
+        $("qText").textContent = q.q;
+        $("qTextTH").textContent = q.q_th || "";
+
+        const passageArea = $("passageArea");
+        const passageText = $("passageText");
+        const passageTextTH = $("passageTextTH");
+
+        if (q.passage) {
+          passageArea.style.display = "block";
+          passageText.innerHTML = `<div class="passage-box">${q.passage}</div>`;
+          passageTextTH.textContent = q.passage_th || "";
+          passageTextTH.style.display = "none";
+        } else {
+          passageArea.style.display = "none";
+          passageText.innerHTML = "";
+          passageTextTH.textContent = "";
+          passageTextTH.style.display = "none";
+        }
+
+        const grid = $("optionsGrid");
+        grid.innerHTML = "";
+
+        q.opts.forEach((opt, idx) => {
+          const btn = document.createElement("div");
+          btn.className = "option-btn";
+          btn.textContent = opt;
+          btn.onclick = () => checkAnswer(btn, idx, q);
+          grid.appendChild(btn);
+        });
+
+        $("feedbackArea").style.display = "none";
+        $("nextBtn").style.display = "none";
+      }
+
+      function lockOptions() {
+        document.querySelectorAll(".option-btn").forEach((b) => (b.style.pointerEvents = "none"));
+      }
+
+      function unlockOptions() {
+        document.querySelectorAll(".option-btn").forEach((b) => (b.style.pointerEvents = "auto"));
+      }
+
+      function checkAnswer(btn, selectedIdx, qData) {
+        lockOptions();
+
+        const fbArea = $("feedbackArea");
+        const fbTitle = $("fbTitle");
+        const fbDetail = $("fbDetail");
+
+        fbArea.style.display = "block";
+        $("nextBtn").style.display = "block";
+
+        if (selectedIdx === qData.ans) {
+          btn.classList.add("correct");
+          streak++;
+          $("streak").textContent = String(streak);
+          fbTitle.textContent = "✨ Correct!";
+          fbTitle.style.color = "var(--success)";
+
+          if (streak > 0 && streak % 5 === 0 && currentLevel < 4) {
+            setTimeout(levelUp, 800);
+            return;
+          }
+        } else {
+          btn.classList.add("wrong");
+          const allBtns = document.querySelectorAll(".option-btn");
+          if (allBtns[qData.ans]) allBtns[qData.ans].classList.add("correct");
+          streak = 0;
+          $("streak").textContent = "0";
+          fbTitle.textContent = "❌ Incorrect";
+          fbTitle.style.color = "var(--danger)";
+        }
+
+        fbDetail.innerHTML = qData.expl || "";
+      }
+
+      function nextQuestion() {
+        availableQuestions.shift();
+        unlockOptions();
+        loadQuestion();
+      }
+
+      function levelUp() {
+        const titles = ["ROOKIE", "INTERMEDIATE", "ADVANCED", "MASTER"];
+
+        if (currentLevel < 4) {
+          currentLevel++;
+          $("levelBadge").textContent = `LV.${currentLevel} ${titles[currentLevel - 1]}`;
+          alert(`🚀 LEVEL UP! ตอนนี้คือ ${titles[currentLevel - 1]} แล้ว (โจทย์จะยากขึ้น)`);
+        } else {
+          alert("🏆 LEGENDARY! พิชิตครบแล้ว (ระบบจะสุ่มวนเพื่อทบทวน)");
+        }
+
+        filterQuestions();
+        unlockOptions();
+        loadQuestion();
+      }
+
+      function initGame() {
+        $("translateBtn").addEventListener("click", toggleTranslation);
+        $("nextBtn").addEventListener("click", nextQuestion);
+        filterQuestions();
+        loadQuestion();
+      }
+
+      initGame();
+    </script>
+  </body>
+</html>
