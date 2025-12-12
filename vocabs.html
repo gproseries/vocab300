@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#020617" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <meta charset="UTF-8" />
+    <title>Vocab 300 Quiz</title>
+    <style>
+      body {
+        font-family: Sarabun, sans-serif;
+        background: #020617;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .game {
+        width: 440px;
+        background: #020617;
+        border-radius: 14px;
+        padding: 22px;
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+      }
+      h1 {
+        text-align: center;
+      }
+      .word {
+        font-size: 34px;
+        text-align: center;
+        color: #38bdf8;
+        margin: 18px 0;
+      }
+      button {
+        width: 100%;
+        padding: 12px;
+        margin: 6px 0;
+        border: none;
+        border-radius: 8px;
+        background: #1e293b;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #334155;
+      }
+      .correct {
+        background: #16a34a !important;
+      }
+      .wrong {
+        background: #dc2626 !important;
+      }
+      .score {
+        text-align: center;
+        margin-top: 10px;
+        color: #facc15;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="game">
+      <h1>📘 Vocab 300</h1>
+      <div class="word" id="word"></div>
+      <div id="choices"></div>
+      <div class="score">คะแนน: <span id="score">0</span></div>
+    </div>
+
+    <script>
+      const vocab = [
+        { en: "abandoned", th: "ถูกละทิ้ง" },
+        { en: "abruptly", th: "อย่างกะทันหัน" },
+        { en: "absolutely", th: "อย่างแน่นอน" },
+        { en: "abundant", th: "อุดมสมบูรณ์" },
+        { en: "academic", th: "เชิงวิชาการ" },
+        { en: "accommodate", th: "จัดหาให้" },
+        { en: "additional", th: "เพิ่มเติม" },
+        { en: "address", th: "จัดการปัญหา" },
+        { en: "adjust", th: "ปรับเปลี่ยน" },
+        { en: "administer", th: "บริหาร" },
+        { en: "admiration", th: "การชื่นชม" },
+        { en: "advantage", th: "ข้อได้เปรียบ" },
+        { en: "advocate", th: "สนับสนุน" },
+        { en: "against", th: "ต่อต้าน" },
+        { en: "aggregate", th: "รวบรวม" },
+        { en: "allow", th: "อนุญาต" },
+        { en: "altered", th: "ถูกเปลี่ยนแปลง" },
+        { en: "alternative", th: "ทางเลือก" },
+        { en: "appoint", th: "แต่งตั้ง" },
+        { en: "appreciate", th: "เห็นคุณค่า" },
+        { en: "approach", th: "เข้าใกล้" },
+        { en: "appropriate", th: "เหมาะสม" },
+        { en: "approval", th: "การอนุมัติ" },
+        { en: "approximately", th: "โดยประมาณ" },
+        { en: "arrange", th: "จัดการ" },
+        { en: "assault", th: "ทำร้าย" },
+        { en: "assignment", th: "งานที่ได้รับมอบหมาย" },
+        { en: "assure", th: "รับรอง" },
+        { en: "attempt", th: "พยายาม" },
+        { en: "attend", th: "เข้าร่วม" },
+        { en: "attention", th: "ความสนใจ" },
+        { en: "attraction", th: "แรงดึงดูด" },
+        { en: "attribute", th: "คุณลักษณะ" },
+        { en: "available", th: "ที่มีอยู่" },
+        { en: "avoid", th: "หลีกเลี่ยง" },
+        { en: "boost", th: "เพิ่ม" },
+        { en: "budget", th: "งบประมาณ" },
+        { en: "bully", th: "รังแก" },
+        { en: "burden", th: "ภาระ" },
+        { en: "candidate", th: "ผู้สมัคร" },
+        { en: "capability", th: "ความสามารถ" },
+        { en: "carefully", th: "อย่างระมัดระวัง" },
+        { en: "categorize", th: "จัดหมวดหมู่" },
+        { en: "certain", th: "แน่นอน" },
+        { en: "claim", th: "อ้าง" },
+        { en: "clinical", th: "ทางการแพทย์" },
+        { en: "coincidence", th: "เหตุบังเอิญ" },
+        { en: "collaboration", th: "การร่วมมือ" },
+        { en: "colleague", th: "เพื่อนร่วมงาน" },
+        { en: "commit", th: "กระทำ" },
+        { en: "common", th: "ทั่วไป" },
+        { en: "community", th: "ชุมชน" },
+        { en: "commute", th: "เดินทาง" },
+        { en: "competition", th: "การแข่งขัน" },
+        { en: "complaint", th: "การร้องเรียน" },
+        { en: "complementary", th: "เสริมกัน" },
+        { en: "completely", th: "อย่างสมบูรณ์" },
+        { en: "compliance", th: "การปฏิบัติตาม" },
+        { en: "compulsory", th: "บังคับ" },
+        { en: "conclude", th: "สรุป" },
+        { en: "condemn", th: "ประณาม" },
+        { en: "condition", th: "เงื่อนไข" },
+        { en: "confusing", th: "น่าสับสน" },
+        { en: "conscious", th: "มีสติ" },
+        { en: "consequence", th: "ผลลัพธ์" },
+        { en: "consequently", th: "ดังนั้น" },
+        { en: "conservation", th: "การอนุรักษ์" },
+        { en: "considered", th: "ได้รับการพิจารณา" },
+        { en: "consistent", th: "สม่ำเสมอ" },
+        { en: "constant", th: "คงที่" },
+        { en: "construction", th: "การก่อสร้าง" },
+        { en: "consumption", th: "การบริโภค" },
+        { en: "contemplate", th: "พิจารณา" },
+        { en: "context", th: "บริบท" },
+        { en: "contribute", th: "มีส่วนช่วย" },
+        { en: "convenient", th: "สะดวก" },
+        { en: "corruption", th: "การทุจริต" },
+        { en: "costly", th: "แพง" },
+        { en: "craving", th: "ความอยาก" },
+        { en: "critical", th: "สำคัญมาก" },
+        { en: "crowded", th: "แออัด" },
+        { en: "crucial", th: "จำเป็นมาก" },
+        { en: "daunting", th: "น่ากลัว" },
+        { en: "decision", th: "การตัดสินใจ" },
+        { en: "dedication", th: "ความทุ่มเท" },
+        { en: "delve", th: "ค้นคว้า" },
+        { en: "demonstrate", th: "แสดงให้เห็น" },
+        { en: "dependable", th: "ไว้ใจได้" },
+        { en: "desirable", th: "เป็นที่ต้องการ" },
+        { en: "despite", th: "ถึงแม้ว่า" },
+        { en: "deteriorate", th: "เสื่อมลง" },
+        { en: "development", th: "การพัฒนา" },
+        { en: "diagnosis", th: "การวินิจฉัย" },
+        { en: "diligent", th: "ขยัน" },
+        { en: "disadvantage", th: "ข้อเสีย" },
+        { en: "effective", th: "มีประสิทธิภาพ" },
+        { en: "eliminate", th: "กำจัด" },
+        { en: "empathy", th: "ความเข้าใจผู้อื่น" },
+        { en: "enable", th: "ทำให้สามารถ" },
+        { en: "encourage", th: "สนับสนุน" },
+        { en: "endure", th: "อดทน" },
+        { en: "essential", th: "จำเป็น" },
+        { en: "excessive", th: "มากเกินไป" },
+        { en: "experienced", th: "มีประสบการณ์" },
+        { en: "extensive", th: "กว้างขวาง" },
+        { en: "financial", th: "เกี่ยวกับการเงิน" },
+        { en: "flexible", th: "ยืดหยุ่น" },
+        { en: "gradually", th: "ค่อยๆ" },
+        { en: "highlight", th: "เน้น" },
+        { en: "identify", th: "ระบุ" },
+        { en: "implementation", th: "การนำไปใช้" },
+        { en: "inevitable", th: "หลีกเลี่ยงไม่ได้" },
+        { en: "inform", th: "แจ้ง" },
+        { en: "intense", th: "รุนแรง" },
+        { en: "investment", th: "การลงทุน" },
+        { en: "lacking", th: "ขาดแคลน" },
+        { en: "lasting", th: "ยั่งยืน" },
+        { en: "resolution", th: "การแก้ปัญหา" },
+        { en: "resource", th: "ทรัพยากร" },
+        { en: "scenario", th: "สถานการณ์" },
+        { en: "schedule", th: "ตารางเวลา" },
+        { en: "sincere", th: "จริงใจ" },
+        { en: "strategy", th: "กลยุทธ์" },
+        { en: "sustainable", th: "ยั่งยืน" },
+        { en: "temporary", th: "ชั่วคราว" },
+        { en: "therefore", th: "ดังนั้น" },
+        { en: "transfer", th: "โอน" },
+        { en: "transform", th: "เปลี่ยนแปลง" },
+        { en: "turbulent", th: "วุ่นวาย" },
+        { en: "unavoidable", th: "หลีกเลี่ยงไม่ได้" },
+        { en: "urgent", th: "เร่งด่วน" },
+        { en: "utilize", th: "ใช้ประโยชน์" },
+        { en: "valid", th: "ถูกต้อง" },
+        { en: "vivid", th: "ชัดเจน" },
+        { en: "widespread", th: "แพร่หลาย" },
+      ];
+
+      let score = 0;
+      let current;
+
+      function shuffle(a) {
+        return a.sort(() => Math.random() - 0.5);
+      }
+
+      function next() {
+        current = vocab[Math.floor(Math.random() * vocab.length)];
+        document.getElementById("word").textContent = current.en;
+        const choices = shuffle([
+          current.th,
+          ...shuffle(vocab.filter((v) => v !== current))
+            .slice(0, 3)
+            .map((v) => v.th),
+        ]);
+        const box = document.getElementById("choices");
+        box.innerHTML = "";
+        choices.forEach((c) => {
+          const b = document.createElement("button");
+          b.textContent = c;
+          b.onclick = () => check(b, c);
+          box.appendChild(b);
+        });
+      }
+
+      function check(btn, ans) {
+        document.querySelectorAll("button").forEach((b) => (b.disabled = true));
+        if (ans === current.th) {
+          btn.classList.add("correct");
+          score++;
+          document.getElementById("score").textContent = score;
+        } else {
+          btn.classList.add("wrong");
+          document.querySelectorAll("button").forEach((b) => {
+            if (b.textContent === current.th) b.classList.add("correct");
+          });
+        }
+        setTimeout(next, 900);
+      }
+
+      next();
+    </script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js");
+      }
+    </script>
+  </body>
+</html>
